@@ -1,0 +1,21 @@
+html
+{
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after
+{
+  box-sizing: inherit;
+  color: aliceblue;
+}
+
+body
+{
+  height: 100vh;
+  margin:0;
+  background: linear-gradient(145deg, #2d3748, #1a202c);
+  overflow: hidden;
+  
+}

@@ -1,0 +1,39 @@
+{
+  "publicKey": "string",
+  "userCreatorId": {
+    "id": "784f394c-42b6-435a-983c-b7beff2784f9",
+    "entityType": "USER"
+  },
+  "id": {
+    "id": "784f394c-42b6-435a-983c-b7beff2784f9",
+    "entityType": "DEVICE"
+  },
+  "tenantId": {
+    "id": "784f394c-42b6-435a-983c-b7beff2784f9",
+    "entityType": "TENANT"
+  },
+  "customerId": {
+    "id": "784f394c-42b6-435a-983c-b7beff2784f9",
+    "entityType": "CUSTOMER"
+  },
+  "name": "A4B72CCDFF33",
+  "type": "Temperature Sensor",
+  "label": "Room 234 Sensor",
+  "deviceProfileId": {
+    "id": "784f394c-42b6-435a-983c-b7beff2784f9",
+    "entityType": "DEVICE_PROFILE"
+  },
+  "deviceData": {
+    "configuration": {},
+    "transportConfiguration": {}
+  },
+  "firmwareId": {
+    "id": "784f394c-42b6-435a-983c-b7beff2784f9",
+    "entityType": "OTA_PACKAGE"
+  },
+  "softwareId": {
+    "id": "784f394c-42b6-435a-983c-b7beff2784f9",
+    "entityType": "OTA_PACKAGE"
+  },
+  "additionalInfo": {}
+}

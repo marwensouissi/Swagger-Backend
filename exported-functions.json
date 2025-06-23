@@ -1,0 +1,91 @@
+{
+  "AlertNotification": [
+    "create_workflow",
+    "edit_workflow",
+    "delete_workflow"
+  ],
+  "AlertTriggers": [
+    "create_trigger",
+    "edit_trigger",
+    "delete_trigger"
+  ],
+  "Auth": [
+    "signup",
+    "verifyUser",
+    "login",
+    "logout"
+  ],
+  "Camera": [
+    "createCamera",
+    "editCamera",
+    "exportToPDF",
+    "exportToCSV",
+    "deleteCamera"
+  ],
+  "ComputeDevice": [
+    "Create_Compute_Device",
+    "Download_config_file",
+    "Delete_Compute_Device"
+  ],
+  "Customers": [
+    "Create_customer",
+    "Get_customer",
+    "Delete_customer"
+  ],
+  "Dashboard": [
+    "Create_dashboard",
+    "Edit_dashboard",
+    "get_dashboard",
+    "delete_dashboard"
+  ],
+  "DataSources": [
+    "Create_Datasource",
+    "Delete_Datasource"
+  ],
+  "Device": [
+    "Create_device",
+    "Get_device"
+  ],
+  "Domain": [
+    "Create_subdomain",
+    "Edit_subdomain",
+    "Delete_subdomain"
+  ],
+  "ModelTraining": [
+    "create_modeltraining",
+    "edit_modeltraining",
+    "delete_modeltraining"
+  ],
+  "NotificationList": [
+    "workflow"
+  ],
+  "OTAupdates": [
+    "create_package",
+    "delete_package"
+  ],
+  "Recipient": [
+    "create_recipient",
+    "edit_recipient",
+    "get_recipient",
+    "delete_recipient"
+  ],
+  "Role": [
+    "create_role",
+    "edit_role",
+    "delete_role"
+  ],
+  "Template": [
+    "Create_template",
+    "delete_template"
+  ],
+  "Users": [
+    "create_user",
+    "edit_user",
+    "delete_user"
+  ],
+  "VideoAnalytics": [
+    "create_Chain",
+    "edit_Chain",
+    "delete_Chain"
+  ]
+}
