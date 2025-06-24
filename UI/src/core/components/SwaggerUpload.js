@@ -11,7 +11,7 @@ const SwaggerUpload = ({ onSuccess }) => {
     setError(null);
 
     const file = e.dataTransfer?.files?.[0] || e.target?.files?.[0];
-    if (!file || file.name !== "swagger.json") {
+    if (!file) {
       setError("Please upload a valid swagger.json file.");
       return;
     }

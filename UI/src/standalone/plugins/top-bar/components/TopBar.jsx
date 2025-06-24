@@ -21,7 +21,9 @@ class TopBar extends React.Component {
       url: props.specSelectors.url(), 
       selectedIndex: 0,
       showUploadModal: false,
-      customSpecs: [] // Store uploaded specs here
+      customSpecs: [], // Store uploaded specs here
+     uploadedSpecs: [] // <-- add this
+
     }
   }
 
@@ -38,13 +40,17 @@ class TopBar extends React.Component {
     this.setState(prev => ({ showUploadModal: !prev.showUploadModal }))
   }
 
-  handleUploadSuccess = (newSpec) => {
-    this.setState(prev => ({
-      customSpecs: [...prev.customSpecs, newSpec],
-      showUploadModal: false
-    }))
-    // Optionally load the new spec immediately
-    this.loadSpec(newSpec.url)}
+handleUploadSuccess = (newSpec) => {
+  this.setState(prev => ({
+    customSpecs: [...prev.customSpecs, newSpec],
+    showUploadModal: false
+  }));
+  this.fetchUploadedSpecs();
+  // Optionally load the new spec immediately
+  this.loadSpec(newSpec.url);
+}
+
+
 
   flushAuthData() {
     const { persistAuthorization } = this.props.getConfigs()
@@ -56,6 +62,41 @@ class TopBar extends React.Component {
       authorized: {}
     })
   }
+
+
+ async fetchUploadedSpecs() {
+  try {
+    const res = await fetch("http://localhost:6060/swagger/list-json");
+    if (!res.ok) return;
+    const data = await res.json();
+    const files = data.files || [];
+
+    // Fetch info.title for each file
+    const uploadedSpecs = await Promise.all(
+      files.map(async (file) => {
+        try {
+          const jsonRes = await fetch(`http://localhost:6060/swagger/json/${file}`);
+          if (!jsonRes.ok) throw new Error();
+          const json = await jsonRes.json();
+          return {
+            name: json.info?.title || file, // fallback to filename if no title
+            url: `http://localhost:6060/swagger/json/${file}`
+          };
+        } catch {
+          return {
+            name: file,
+            url: `http://localhost:6060/swagger/json/${file}`
+          };
+        }
+      })
+    );
+
+    this.setState({ uploadedSpecs });
+  } catch (err) {
+    // handle error if needed
+  }
+}
+
 
   loadSpec = (url) => {
     this.flushAuthData()
@@ -99,7 +140,11 @@ class TopBar extends React.Component {
  setSelectedUrl = (selectedUrl) => {
   const configs = this.props.getConfigs()
   const urls = configs.urls || []
-  const allSpecs = [...urls, ...this.state.customSpecs]
+const allSpecs = [
+  ...(urls || []), 
+  ...this.state.customSpecs, 
+  ...this.state.uploadedSpecs
+];
 
   if (allSpecs && allSpecs.length) {
     allSpecs.forEach((spec, i) => {
@@ -132,6 +177,8 @@ class TopBar extends React.Component {
 
       this.loadSpec(urls[targetIndex].url)
     }
+      this.fetchUploadedSpecs();
+
   }
 
   onFilterChange =(e) => {
@@ -175,34 +222,33 @@ class TopBar extends React.Component {
     }
 
 
-  const allSpecs = [...(urls || []), ...this.state.customSpecs]
+const allSpecs = [...(urls || []), ...this.state.customSpecs, ...this.state.uploadedSpecs];
 
-    if (allSpecs.length) {
+if (allSpecs.length) {
   const options = allSpecs.map((link, i) => (
     <option
       key={i}
       value={link.url}
-      style={{ color: "#000", backgroundColor: "#fff" }} // Black text, white background
+      style={{ color: "#000", backgroundColor: "#fff" }}
     >
-     {link.name || link.url}
-
+      {link.name || link.url}
     </option>
-  ))
+  ));
 
-    control.push(
-        <label className="select-label" htmlFor="select">
-          <span>Select a definition</span>
-          <select
-            id="select"
-            disabled={isLoading}
-            onChange={this.onUrlSelect}
-            value={allSpecs[this.state.selectedIndex]?.url}
-          >
-            {options}
-          </select>
-        </label>
-      )
-  }
+  control.push(
+    <label className="select-label" htmlFor="select">
+      <span>Select a definition</span>
+      <select
+        id="select"
+        disabled={isLoading}
+        onChange={this.onUrlSelect}
+        value={allSpecs[this.state.selectedIndex]?.url}
+      >
+        {options}
+      </select>
+    </label>
+  );
+}
 
   const servers = specSelectors.servers()
   const schemes = specSelectors.schemes()

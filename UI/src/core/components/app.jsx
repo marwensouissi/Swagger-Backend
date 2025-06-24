@@ -2,6 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import SwaggerUpload from "../components/SwaggerUpload"
 import { checkIfSwaggerExists } from "../../services/swaggerService"
+import AddUserModal from "./add_user"
 
 // K6 predefined functions list
 const k6Functions = [
@@ -25,14 +26,19 @@ class App extends React.Component {
       password: "",
       error: null,
       showK6Functions: false,
+      showSwaggerUpload: false, // <-- Add this
+      role: null,
+      showAddUserModal: false,
+
     }
   }
 
-  async componentDidMount() {
+ async componentDidMount() {
     const exists = await checkIfSwaggerExists()
+    const savedToken = sessionStorage.getItem("authToken")
+    const savedRole = sessionStorage.getItem("role")
 
     if (exists) {
-      const savedToken = sessionStorage.getItem("authToken")
       if (savedToken && this.props.system?.authActions?.authorize) {
         this.props.system.authActions.authorize({
           apiKey: {
@@ -46,20 +52,27 @@ class App extends React.Component {
           },
         })
       }
-
       this.setState({
         isSwaggerChecked: true,
         isSwaggerReady: true,
         isLoggedIn: !!savedToken,
         token: savedToken,
+        role: savedRole,
+
       })
     } else {
       this.setState({
         isSwaggerChecked: true,
         isSwaggerReady: false,
+        isLoggedIn: !!savedToken,
+        token: savedToken,
+        role: savedRole,
+
       })
     }
   }
+
+ 
 
   handleInputChange = (e) => {
     this.setState({ [e.target.name]: e.target.value })
@@ -107,10 +120,11 @@ class App extends React.Component {
         },
       })
   
-      this.setState({ isLoggedIn: true, token })
+      this.setState({ isLoggedIn: true, token, role: data.role })
     } catch (err) {
       this.setState({ error: err.message })
     }
+    // ...inside handleLogin after sessionStorage.setItem("role", data.role)
   }
   
   renderLogin() {
@@ -267,18 +281,73 @@ class App extends React.Component {
     return Component || (() => <h1>No layout defined for "{layoutName}"</h1>)
   }
 
+ renderNoSwagger() {
+    return (
+      <div style={{
+        minHeight: "100vh",
+        background: "#090D2B",
+        color: "#fff",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "'Segoe UI', sans-serif"
+      }}>
+        <h2>No Swagger file uploaded</h2>
+        <p style={{ color: "rgba(255,255,255,0.7)", marginBottom: 24 }}>
+          Please upload a Swagger JSON file to continue.
+        </p>
+        <button
+          onClick={() => this.setState({ showSwaggerUpload: true })}
+          style={{
+            padding: "12px 28px",
+            backgroundColor: "#84BD00",
+            color: "#090D2B",
+            borderRadius: "6px",
+            border: "none",
+            fontWeight: 600,
+            fontSize: "16px",
+            cursor: "pointer"
+          }}
+        >
+          Upload JSON
+        </button>
+        {this.state.showSwaggerUpload && (
+          <div style={{
+            position: "fixed",
+            top: 0, left: 0, right: 0, bottom: 0,
+            background: "rgba(0,0,0,0.6)",
+            zIndex: 2000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+            <div style={{ background: "#090D2B", borderRadius: 12, padding: 32, position: "relative" }}>
+              <button
+                onClick={() => this.setState({ showSwaggerUpload: false })}
+                style={{
+                  position: "absolute", top: 10, right: 10,
+                  background: "none", border: "none", color: "#fff", fontSize: 24, cursor: "pointer"
+                }}
+                aria-label="Close"
+              >×</button>
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   render() {
     const { isSwaggerChecked, isSwaggerReady, isLoggedIn, showK6Functions } = this.state
 
     if (!isSwaggerChecked) return null
 
-    if (!isSwaggerReady) {
-      return <SwaggerUpload onSuccess={() => window.location.reload()} />
-    }
-
     if (!isLoggedIn) {
       return this.renderLogin()
     }
+
+  
 
     const Layout = this.getLayout()
 
@@ -302,7 +371,26 @@ class App extends React.Component {
         >
           K6 Functions
         </button>
-
+{this.state.role === "admin" && (
+  <button
+    onClick={() => this.setState({ showAddUserModal: true })}
+    style={{
+      position: "fixed",
+      top: "22px",
+      right: "220px",
+      zIndex: 1000,
+      padding: "10px 24px",
+      borderRadius: "6px",
+      backgroundColor: "#007bff",
+      color: "#fff",
+      border: "none",
+      marginRight: "12px",
+      cursor: "pointer"
+    }}
+  >
+    Add User
+  </button>
+)}
         {/* K6 Function List Display */}
         {showK6Functions && (
           <div style={{
@@ -353,7 +441,10 @@ class App extends React.Component {
         >
           Logout
         </button>
-
+        <AddUserModal
+          isOpen={this.state.showAddUserModal}
+          onClose={() => this.setState({ showAddUserModal: false })}
+        />
         <Layout />
       </div>
     )

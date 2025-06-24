@@ -4,6 +4,8 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 from pathlib import Path
 import json
 
+from fastapi.responses import FileResponse
+
 router = APIRouter(prefix="/swagger", tags=["swaggers"])
 
 # Define a consistent base directory for saving swagger JSON files
@@ -86,3 +88,10 @@ def get_base_url(filename: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error reading base URL: {str(e)}")
+
+@router.get("/json/{filename}")
+def get_swagger_json(filename: str):
+    file_path = BASE_DIR / filename
+    if not file_path.exists() or not file_path.name.endswith(".json"):
+        raise HTTPException(status_code=404, detail="JSON file not found.")
+    return FileResponse(str(file_path), media_type="application/json")

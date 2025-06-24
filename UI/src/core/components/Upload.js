@@ -6,33 +6,41 @@ const Upload = ({ onSuccess }) => {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFileDrop = async (e) => {
-  e.preventDefault();
-  setIsDragging(false);
-  setError(null);
+    e.preventDefault();
+    setIsDragging(false);
+    setError(null);
 
-  const file = e.dataTransfer?.files?.[0] || e.target?.files?.[0];
-  if (!file || !file.name.endsWith(".json")) {
-    setError("Please upload a valid JSON file.");
-    return;
-  }
+    const file = e.dataTransfer?.files?.[0] || e.target?.files?.[0];
+    if (!file || !file.name.endsWith(".json")) {
+      setError("Please upload a valid JSON file.");
+      return;
+    }
 
-  try {
-    const fileContent = await readFile(file);
-    const spec = JSON.parse(fileContent);
-    
-    // Create a URL for the file (could be a blob URL or just use the name)
-    const specUrl = URL.createObjectURL(file);
-    
-    // Call onSuccess with the spec data
-    onSuccess({
-      url: specUrl,
-      name: spec.info?.title || file.name.replace('.json', ''),
-      spec // The actual spec content if needed
-    });
-  } catch (err) {
-    setError("Failed to parse JSON file: " + err.message);
-  }
-};
+    try {
+      // Prepare form data
+      const formData = new FormData();
+      formData.append("file", file);
+
+      // Send to backend API
+      const response = await fetch("http://localhost:6060/swagger/upload-json", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const msg = await response.text();
+        throw new Error(msg || "Failed to upload file");
+      }
+
+      // Optionally, get the saved spec info from the response
+      const data = await response.json();
+
+      // Call onSuccess with the backend response
+      onSuccess(data);
+    } catch (err) {
+      setError("Failed to upload file: " + err.message);
+    }
+  };
 
   const readFile = (file) => {
   return new Promise((resolve, reject) => {

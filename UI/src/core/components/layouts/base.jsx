@@ -4,6 +4,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import ListSelectedApis from "../list-selected-apis"
+import { Warning } from "postcss"
 
 export default class BaseLayout extends React.Component {
   static propTypes = {
@@ -56,8 +57,8 @@ export default class BaseLayout extends React.Component {
       loadingMessage = (
         <div className="info">
           <div className="loading-container">
-            <h4 className="title">Failed to load API definition.</h4>
-            <Errors />
+            <h4 className="title">Please upload a Swagger JSON file to continue.
+</h4>
           </div>
         </div>
       )

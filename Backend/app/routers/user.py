@@ -45,7 +45,12 @@ def logout(credentials: HTTPAuthorizationCredentials = Depends(security)):
     logout_token(credentials.credentials)
     return {"message": "Successfully logged out"}
 
-@router.get("/me", response_model=UserRead)
-def get_current_user_info(current_user: User = Depends(get_current_user)):
-    """Get current user information"""
-    return current_user
+
+@router.get("/me", response_model=dict)
+def get_me(current_user: User = Depends(get_current_user)):
+    return {
+        "id": current_user.id,
+        "username": current_user.username,
+        "email": current_user.email,
+        "role": current_user.role
+}
