@@ -35,20 +35,21 @@ async def run_k6_with_dashboard(file_path: Path):
     env["K6_WEB_DASHBOARD"] = "true"
     env["K6_WEB_DASHBOARD_PORT"] = str(dashboard_port)
 
-    process = await asyncio.create_subprocess_exec(
-        "k6", "run", str(file_path),
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.STDOUT,
-        env=env
+    process = subprocess.Popen(
+        ["k6", "run", str(file_path)],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        env=env,
+        text=True
     )
 
     try:
-        async for line in process.stdout:
-            yield f"data: {line.decode().strip()}\n\n"
+        for line in process.stdout:
+            yield f"data: {line.strip()}\n\n"
     except Exception as e:
         yield f"data: Error: {str(e)}\n\n"
 
-    return_code = await process.wait()
+    return_code = process.wait()
     yield f"data: k6 test finished with exit code: {return_code}\n\n"
 
 # SSE endpoint: live stream K6 output and dashboard port

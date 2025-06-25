@@ -1,16 +1,42 @@
 import React, { useState } from "react";
 import { FiPlus, FiPlay, FiX, FiClock, FiUsers } from "react-icons/fi";
 
-const LaunchTestModal = ({ isOpen, onClose, onLaunch }) => {
+const LaunchTestModal = ({ isOpen, onClose, onLaunch,   swaggerFilename  // Destructure prop properly
+ }) => {
   if (!isOpen) return null;
 
-  const [stages, setStages] = useState([{ duration: "", target: "" }]);
+  const [stages, setStages] = useState([{ duration: "", target: "", iterations: "", vus: "" }]);
+  const [disabledFields, setDisabledFields] = useState({
+    duration: false,
+    iterations: false,
+    target: false,
+    vus: false,
+  });
+  const [isAddStageVisible, setIsAddStageVisible] = useState(true);
 
   const handleStageChange = (index, field, value) => {
     const updated = [...stages];
     updated[index][field] = value;
     setStages(updated);
   };
+
+  const handleFieldChange = (index, field, value) => {
+    const updated = [...stages];
+    updated[index][field] = value;
+    setStages(updated);
+
+    if (field === "iterations" && value) {
+      setDisabledFields({ duration: true, target: true, iterations: false, vus: false });
+      setIsAddStageVisible(false);
+    } else if (field === "duration" && value) {
+      setDisabledFields({ duration: false, target: false, iterations: true, vus: true });
+      setIsAddStageVisible(true);
+    } else if (!value) {
+      setDisabledFields({ duration: false, target: false, iterations: false, vus: false });
+      setIsAddStageVisible(true);
+    }
+  };
+console.log("Passing swaggerFilename to ListSelectedApis:", swaggerFilename);
 
   const handleAddStage = () => {
     setStages([...stages, { duration: "", target: "" }]);
@@ -22,15 +48,25 @@ const LaunchTestModal = ({ isOpen, onClose, onLaunch }) => {
     setStages(updated);
   };
 
-  const handleLaunchTest = () => {
-    const formatted = stages.map((stage) => ({
-      duration: stage.duration.endsWith("s")
-        ? stage.duration
-        : `${stage.duration}s`,
-      target: parseInt(stage.target),
-    }));
-    onLaunch(formatted);
-  };
+const handleLaunchTest = () => {
+  const formattedStages = stages.map((stage) => {
+    if (stage.iterations && stage.vus) {
+      return {
+        iterations: parseInt(stage.iterations),
+        vus: parseInt(stage.vus),
+      };
+    } else if (stage.duration && stage.target) {
+      return {
+        duration: stage.duration.endsWith("s") ? stage.duration : `${stage.duration}s`,
+        target: parseInt(stage.target),
+      };
+    }
+    return {};
+  });
+
+  // Just pass the stages up to the parent
+  onLaunch(formattedStages);
+};
 
   return (
     <div
@@ -164,9 +200,8 @@ const LaunchTestModal = ({ isOpen, onClose, onLaunch }) => {
                 <input
                   type="number"
                   value={stage.duration}
-                  onChange={(e) =>
-                    handleStageChange(index, "duration", e.target.value)
-                  }
+                  onChange={(e) => handleFieldChange(index, "duration", e.target.value)}
+                  disabled={disabledFields.duration}
                   style={{
                     width: "47%",
                     padding: "10px 12px",
@@ -179,11 +214,10 @@ const LaunchTestModal = ({ isOpen, onClose, onLaunch }) => {
                   placeholder="e.g. 30"
                 />
               </div>
-              <div style={{ marginBottom: "16px", position: "absolute", top: "9.5%", right: "1px" }}>
+              <div style={{ marginBottom: "4px", position: "absolute", top: "10%", right: "1px" }}>
                 <label
                   style={{
                     display: "block",
-                    marginBottom: "8px",
                     fontSize: "14px",
                     color: "#a0aec0",
                     display: "flex",
@@ -196,7 +230,8 @@ const LaunchTestModal = ({ isOpen, onClose, onLaunch }) => {
                 </label>
                 <input
                   type="number"
-                  
+                  onChange={(e) => handleFieldChange(index, "iterations", e.target.value)}
+                  disabled={disabledFields.iterations}
                   style={{
                     width: "89%",
                     padding: "10px 12px",
@@ -227,11 +262,41 @@ const LaunchTestModal = ({ isOpen, onClose, onLaunch }) => {
                 <input
                   type="number"
                   value={stage.target}
-                  onChange={(e) =>
-                    handleStageChange(index, "target", e.target.value)
-                  }
+                  onChange={(e) => handleFieldChange(index, "target", e.target.value)}
+                  disabled={disabledFields.target}
                   style={{
-                    width: "100%",
+                    width: "47%",
+                    padding: "10px 12px",
+                    borderRadius: "6px",
+                    border: "1px solid #4a5568",
+                    background: "#2d3748",
+                    color: "#f7fafc",
+                    fontSize: "14px",
+                  }}
+                  placeholder="e.g. 100"
+                />
+                <div  style={{ marginBottom: "10px", position: "absolute", top: "54.5%", right: "1px" }}>
+                 <label
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontSize: "14px",
+                    color: "#a0aec0",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  <FiUsers size={16} />
+                  VUS
+                </label>
+                <input
+                  type="number"
+                  value={stage.vus}
+                  onChange={(e) => handleStageChange(index, "vus", e.target.value)}
+                  disabled={disabledFields.vus}
+                  style={{
+                    width: "89%",
                     padding: "10px 12px",
                     borderRadius: "6px",
                     border: "1px solid #4a5568",
@@ -243,37 +308,40 @@ const LaunchTestModal = ({ isOpen, onClose, onLaunch }) => {
                 />
               </div>
             </div>
+            </div>
           ))}
         </div>
 
-        <button
-          onClick={handleAddStage}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "8px",
-            width: "100%",
-            padding: "10px",
-            marginBottom: "20px",
-            background: "rgba(66, 153, 225, 0.1)",
-            border: "1px dashed #4299e1",
-            borderRadius: "6px",
-            color: "#4299e1",
-            cursor: "pointer",
-            transition: "all 0.2s",
-            fontSize: "14px",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.background = "rgba(66, 153, 225, 0.2)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.background = "rgba(66, 153, 225, 0.1)";
-          }}
-        >
-          <FiPlus size={16} />
-          Add Stage
-        </button>
+        {isAddStageVisible && (
+          <button
+            onClick={handleAddStage}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              width: "100%",
+              padding: "10px",
+              marginBottom: "20px",
+              background: "rgba(66, 153, 225, 0.1)",
+              border: "1px dashed #4299e1",
+              borderRadius: "6px",
+              color: "#4299e1",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              fontSize: "14px",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.background = "rgba(66, 153, 225, 0.2)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.background = "rgba(66, 153, 225, 0.1)";
+            }}
+          >
+            <FiPlus size={16} />
+            Add Stage
+          </button>
+        )}
 
         <div
           style={{

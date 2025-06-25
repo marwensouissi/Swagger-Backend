@@ -3,6 +3,7 @@ import PropTypes from "prop-types"
 import {parseSearch, serializeSearch} from "core/utils"
 import Upload from "core/components/Upload"
 import { color } from "framer-motion"
+import ListSelectedApis from "../../../../core/components/list-selected-apis"; // Corrected path to match the actual file structure
 
 class TopBar extends React.Component {
 
@@ -23,8 +24,8 @@ class TopBar extends React.Component {
       showUploadModal: false,
       customSpecs: [], // Store uploaded specs here
      uploadedSpecs: [] // <-- add this
-
     }
+    
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -79,15 +80,19 @@ handleUploadSuccess = (newSpec) => {
           if (!jsonRes.ok) throw new Error();
           const json = await jsonRes.json();
           return {
-            name: json.info?.title || file, // fallback to filename if no title
+            name: json.info?.title, // fallback to filename if no title
+            filename: file,
             url: `http://localhost:6060/swagger/json/${file}`
           };
         } catch {
           return {
             name: file,
-            url: `http://localhost:6060/swagger/json/${file}`
+            url: `http://localhost:6060/swagger/json/${file}`,
+            
           };
+          
         }
+        
       })
     );
 
@@ -137,6 +142,15 @@ handleUploadSuccess = (newSpec) => {
     }
   }
 
+
+  // Inside the TopBar component
+getCurrentSwaggerFilename = () => {
+  const currentUrl = this.props.specSelectors.url();
+  console.log("Current URL in getCurrentSwaggerFilename:", currentUrl); // Debug log
+  return currentUrl?.split('/').pop() || null;
+};
+
+
  setSelectedUrl = (selectedUrl) => {
   const configs = this.props.getConfigs()
   const urls = configs.urls || []
@@ -149,12 +163,32 @@ const allSpecs = [
   if (allSpecs && allSpecs.length) {
     allSpecs.forEach((spec, i) => {
       if (spec.url === selectedUrl) {
+        console.log(`Selected Swagger file: ${spec.filename}`); // Log the selected Swagger file name
         this.setState({ selectedIndex: i })
         this.setSearch(spec)
       }
     })
   }
 }
+
+ // In TopBar component
+componentDidUpdate(prevProps) {
+  if (this.props.specSelectors.url() !== prevProps.specSelectors.url()) {
+    const updatedFilename = this.getCurrentSwaggerFilename();
+    console.log("Updated Swagger filename:", updatedFilename);
+    // If you need to store it in state (though you might not need to)
+    this.setState({ swaggerFilename: updatedFilename });
+  }
+}
+
+getCurrentSwaggerFilename() {
+  const currentUrl = this.props.specSelectors.url();
+  // Extract filename from URL (handles both local and remote files)
+  const filename = currentUrl?.split('/').pop() || null;
+  console.log("Current Swagger filename:", filename);
+  return filename;
+}
+
 
   componentDidMount() {
     const configs = this.props.getConfigs()
@@ -187,6 +221,8 @@ const allSpecs = [
   }
 
   render() {
+
+    
   let { getComponent, specSelectors, getConfigs } = this.props
       const Button = getComponent("Button", () => <button />)
     const Link = getComponent("Link", () => <a />)
@@ -198,6 +234,8 @@ const allSpecs = [
 
   let isLoading = specSelectors.loadingStatus() === "loading"
   let isFailed = specSelectors.loadingStatus() === "failed"
+
+
 
   const { urls } = getConfigs()
   let control = []
@@ -220,7 +258,13 @@ const allSpecs = [
         </div>
       )
     }
+        const swaggerFilename = this.getCurrentSwaggerFilename();
 
+console.log("Passing swaggerFilename to ListSelectedApis:", swaggerFilename);
+<ListSelectedApis 
+  swaggerFilename={swaggerFilename} 
+  onDebug={(payload) => console.log("Payload in ListSelectedApis:", payload)} 
+/>
 
 const allSpecs = [...(urls || []), ...this.state.customSpecs, ...this.state.uploadedSpecs];
 

@@ -96,6 +96,8 @@ export default class BaseLayout extends React.Component {
     const hasSchemes = schemes && schemes.size
     const hasSecurityDefinitions = !!specSelectors.securityDefinitions()
 
+    const swaggerFilename = specSelectors.url()?.split('/').pop() || null;
+
     return (
       <div className="swagger-ui">
         <SvgAssets />
@@ -128,7 +130,7 @@ export default class BaseLayout extends React.Component {
               <Operations />
             </Col>
 
-            <ListSelectedApis />
+            <ListSelectedApis swaggerFilename={swaggerFilename} />
           </Row>
 
           {isOAS31 && (

@@ -46,25 +46,30 @@ const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
 
     try {
       const token = sessionStorage.getItem("authToken");
-      const url = `http://localhost:6060/run/stream/${filename}?token=${token}`;
+      const url = `http://localhost:6060/execution/run/stream/${filename}`;
 
-      const eventSource = new EventSource(url);
+      const eventSource = new EventSource(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
       eventSource.onmessage = (e) => {
         setLogs((prev) => prev + e.data + '\n');
-      
+
         if (e.data.startsWith("DASHBOARD_PORT:")) {
           const port = e.data.split(":")[1];
           setDashboardPort(port);
-          setDashboardAvailable(true); // you can trigger this when you get the port
+          setDashboardAvailable(true);
         }
-      
+
         if (
           e.data.toLowerCase().includes('web dashboard') ||
           e.data.includes('dashboard available')
         ) {
           setDashboardAvailable(true);
         }
-      
+
         if (
           e.data.includes('test finished with exit code') ||
           e.data.includes('test completed') ||
@@ -74,11 +79,9 @@ const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
           setRunning(false);
         }
       };
-      
 
       eventSource.onopen = () => {
         console.log("SSE connection opened");
-        // Dashboard should be available shortly after test starts
         setTimeout(() => setDashboardAvailable(true), 2000);
       };
 

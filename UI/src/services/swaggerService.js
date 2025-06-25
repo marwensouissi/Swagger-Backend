@@ -3,7 +3,7 @@ export async function checkIfSwaggerExists() {
     const res = await fetch("http://localhost:6060/swagger/list-json");
 
     if (!res.ok) {
-      console.error("❌ Failed to fetch Swagger files");
+      console.error(" Failed to fetch Swagger files");
       return false;
     }
 
@@ -13,7 +13,7 @@ export async function checkIfSwaggerExists() {
     console.log("Swagger exists:", exists);
     return exists;
   } catch (err) {
-    console.error("⚠️ Error checking Swagger existence:", err);
+    console.error(" Error checking Swagger existence:", err);
     return false;
   }
 }

@@ -6,7 +6,9 @@ import ChooseExecutionOption from './ChooseExecutionOption';
 
 const HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
 
-const ListSelectedApis = () => {
+const ListSelectedApis = ({ swaggerFilename }) => {
+    console.log("[ListSelectedApis] swaggerFilename:", swaggerFilename); // Debug
+
   const dispatch = useDispatch();
   const [isModalOpen, setModalOpen] = useState(false);
   const [generatedFilename, setGeneratedFilename] = useState(null);
@@ -49,43 +51,70 @@ const ListSelectedApis = () => {
     dispatch(removeApiEntry(api, method.toLowerCase()));
   };
 
-  const handleLaunchTest = async (stageInputArray) => {
-    const finalResult = generateFinalResult(stageInputArray, apiData);
-    console.log(JSON.stringify(finalResult, null, 2));
+const handleLaunchTest = async (stages) => {
+  // Combine stages with test cases
+  const payload = {
+    swagger_filename: swaggerFilename,
+    stages: stages,
+    test_cases: apiData
+      .filter(({ functionName }) => !!functionName)
+      .map(({ api, method, bodyValue, functionName, params }) => {
+        let url = api.replace(/\{\?.*?\}/, '');
+        let baseUrl = url.split('/').slice(0, 2).join('/');
+        if (!baseUrl.startsWith('/')) baseUrl = '/' + baseUrl;
 
-    try {
-      const token = sessionStorage.getItem('authToken');
+        const paramFields = {};
+        if (params) {
+          Object.entries(params).forEach(([key, value]) => {
+            if (key.endsWith('-path')) {
+              const paramName = key.replace('-path', '');
+              paramFields[paramName] = value;
+            }
+          });
+        }
 
-      // const response = await fetch('http://localhost:6060/scenarios', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${token}`,
-      //   },
-      //   body: JSON.stringify(finalResult),
-      // });
+        const testCase = {
+          function: functionName,
+          method,
+          url: baseUrl,
+          save_as: functionName,
+          ...paramFields
+        };
 
-      // const scenarioData = await response.json();
+        if (['POST', 'PUT', 'PATCH'].includes(method.toUpperCase()) && bodyValue) {
+          try {
+            testCase.payload = JSON.parse(bodyValue);
+          } catch (e) {
+            console.error('Invalid JSON body:', bodyValue);
+            testCase.payload = {};
+          }
+        }
 
-      const generateTest = await fetch('http://localhost:6060/generate/from-config', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(finalResult),
-      });
-
-      const result = await generateTest.json();
-      console.log('Test generated:', result);
-
-      setGeneratedFilename(result.filename);
-      setShowExecutionOptions(true);
-      setModalOpen(false);
-    } catch (error) {
-      console.error('Error launching test:', error);
-    }
+        return testCase;
+      })
   };
+
+  console.log("Complete payload:", payload);
+
+  try {
+    const token = sessionStorage.getItem('authToken');
+    const response = await fetch('http://localhost:6060/generate/from-config', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+    setGeneratedFilename(result.filename);
+    setShowExecutionOptions(true);
+    setModalOpen(false);
+  } catch (error) {
+    console.error('Error launching test:', error);
+  }
+};
 
   const generateRandomId = () => {
     // Generates a random 20-character alphanumeric string
@@ -94,11 +123,22 @@ const ListSelectedApis = () => {
     ).join('');
   };
 
-  const generateFinalResult = (stageInput, apiData) => {
-    const stages = stageInput.map(stage => ({
-      duration: stage.duration.endsWith('s') ? stage.duration : `${stage.duration}s`,
-      target: Number(stage.target),
-    }));
+  const generateFinalResult = (stageInput, apiData, swaggerFilename) => {
+    const stages = stageInput.map(stage => {
+      if (stage.iterations && stage.vus) {
+        return {
+          iterations: parseInt(stage.iterations),
+          vus: parseInt(stage.vus),
+        };
+      } else if (stage.duration && stage.target) {
+        return {
+          duration: stage.duration.endsWith('s') ? stage.duration : `${stage.duration}s`,
+          target: Number(stage.target),
+        };
+      } else {
+        throw new Error("Each stage must have either iterations and vus, or duration and target.");
+      }
+    });
 
     const test_cases = apiData
       .filter(({ functionName }) => !!functionName)
@@ -150,7 +190,7 @@ const ListSelectedApis = () => {
         return testCase;
       });
 
-    return { stages, test_cases };
+    return { swagger_filename: swaggerFilename, stages, test_cases };
   };
 
   const getMethodColor = (method) => {
@@ -227,7 +267,9 @@ const ListSelectedApis = () => {
       <LaunchTestModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
-        onLaunch={(stageInputs) => handleLaunchTest(stageInputs)}
+        onLaunch={handleLaunchTest} // Just pass the function directly
+        swaggerFilename={swaggerFilename} // Add this line
+
       />
 
       {showExecutionOptions ? (
