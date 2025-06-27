@@ -1,0 +1,35 @@
+import { signup, login } from '../AuthManagement/auth.js';
+{% for module in test_cases %}
+import { {{ module.functions | join(', ') }} } from '{{ module.module }}';
+{% endfor %}
+import { sleep } from 'k6';
+
+const PASSWORD = '123123123';
+
+export let options = {
+    stages: [
+        {% for stage in stages %}
+            { duration: '{{ stage.duration }}', target: {{ stage.target }} }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]
+};
+
+export default function () {
+    const user = signup();
+    if (user) {
+        const token = login(user.email, PASSWORD);
+        if (token) {
+            {% for module in test_cases %}
+                {% set module_folder = module.module.split('/')[-2] %}
+                {% set id_var = module_folder | replace('Management', '') | replace('-', '_') ~ 'ID' %}
+                {% for func in module.functions %}
+                    {% if loop.index0 == 0 %}
+                        const {{ id_var }} = {{ func }}(token);
+                    {% else %}
+                        {{ func }}(token, {{ id_var }});
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        }
+    }
+}

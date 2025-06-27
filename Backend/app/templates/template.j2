@@ -1,0 +1,83 @@
+import {
+get_abstract_with_payload,
+get_abstract_without_payload,
+post_abstract_with_payload,
+patch_abstract_with_payload,
+delete_abstract_without_payload,
+put_abstract_with_payload
+} from '../../k6/utils/abstract.js';
+import { signup, login } from '../../k6/AuthManagement/auth.js';
+import { randomString } from 'https://jslib.k6.io/k6-utils/1.2.0/index.js';
+ 
+const PASSWORD = "123123123";
+ 
+export let options = {
+    {% if use_iterations %}
+    vus: {{ vus }},
+    iterations: {{ iterations }},
+    {% else %}
+    stages: [
+        {% for stage in stages %}
+        {
+            duration: "{{ stage.duration }}",
+            target: {{ stage.target }}
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ],
+    {% endif %}
+};
+ 
+ 
+export default function () {
+const user = signup();
+const token = login(user.email, PASSWORD);
+ 
+{% for test in tests %}
+{% set func_name = test.save_as | default(test.function) %}
+{% set full_url = base_url ~ test.url %}
+{% if test.method in ["POST", "PUT", "PATCH"] %}
+const {{ func_name }} = {{ test.method.lower() }}_abstract_with_payload({
+  url: `{{ full_url
+            | replace("{{token}}", "${token}")
+            | regex_replace('([?&][^=]+)=((?!\\$\\{)[a-zA-Z_][\\w\\.]+)', '\\1=${\\2}')
+         }}`,
+  token: token,
+  tag: "{{ test.function }}",
+  job: "{{ test.function }}",
+  {% if test.payload is defined %}
+    payload: {{ test.payload
+                | tojson
+                | regex_replace('"randomString\\((\\d+)\\)"', 'randomString(\\1)') }}
+  {% else %}
+    payload: {}
+  {% endif %}
+});
+console.log('🧪 {{ func_name }} response:', JSON.stringify({{ func_name }}.data));
+ 
+{% elif test.method == "GET" %}
+const {{ func_name }} = get_abstract_without_payload({
+  url: `{{ full_url
+            | replace("{{token}}", "${token}")
+            | regex_replace('([?&][^=]+)=((?!\\$\\{)[a-zA-Z_][\\w\\.]+)', '\\1=${\\2}')
+         }}`,
+  token: token,
+  tag: "{{ test.function }}",
+  job: "{{ test.function }}"
+});
+console.log('🧪 {{ func_name }} response:', JSON.stringify({{ func_name }}.data));
+ 
+{% elif test.method == "DELETE" %}
+const {{ func_name }} = delete_abstract_without_payload({
+  url: `{{ full_url
+            | replace("{{token}}", "${token}")
+            | regex_replace('([?&][^=]+)=((?!\\$\\{)[a-zA-Z_][\\w\\.]+)', '\\1=${\\2}')
+         }}`,
+  token: token,
+  tag: "{{ test.function }}",
+  job: "{{ test.function }}"
+});
+console.log('🧪 {{ func_name }} response:', JSON.stringify({{ func_name }}.data));
+ 
+{% endif %}
+{% endfor %}
+}

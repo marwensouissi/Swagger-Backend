@@ -1,0 +1,29 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Update system packages
+      apt:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Install dependencies
+      apt:
+        name:
+          - k6
+          - openjdk-17-jdk
+          - jenkins
+          - docker.io
+          - git
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add Jenkins to the Docker group
+      user:
+        name: jenkins
+        groups: docker
+        append: yes

@@ -1,0 +1,28 @@
+terraform {
+  required_providers {
+    digitalocean = {
+      source  = "digitalocean/digitalocean"
+      version = "~> 2.49.1"
+    }
+  }
+}
+
+provider "digitalocean" {
+  token = "{{ token }}"
+}
+
+resource "digitalocean_kubernetes_cluster" "k8s" {
+  name    = "{{ name }}"
+  region  = "{{ region }}"
+  version = "1.28.0-do.0"
+
+  node_pool {
+    name       = "default-pool"
+    size       = "{{ size }}"
+    node_count = {{ count }}
+  }
+}
+
+output "cluster_id" {
+  value = digitalocean_kubernetes_cluster.k8s.id
+}
