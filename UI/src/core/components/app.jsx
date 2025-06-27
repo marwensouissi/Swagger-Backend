@@ -30,9 +30,11 @@ class App extends React.Component {
       role: null,
       showAddUserModal: false,
 
+
     }
   }
 
+  
  async componentDidMount() {
     const exists = await checkIfSwaggerExists()
     const savedToken = sessionStorage.getItem("authToken")
@@ -73,6 +75,7 @@ class App extends React.Component {
   }
 
  
+  
 
   handleInputChange = (e) => {
     this.setState({ [e.target.name]: e.target.value })

@@ -1,35 +1,71 @@
 import React, { useState } from "react";
-import { FiPlus, FiPlay, FiX, FiClock, FiUsers } from "react-icons/fi";
+import { FiPlus, FiPlay, FiX, FiLock, FiUsers } from "react-icons/fi";
 
-const AddUserModal = ({ isOpen, onClose, onLaunch }) => {
+const AddUserModal = ({ isOpen, onClose, onUserAdded = () => {}  }) => {
   if (!isOpen) return null;
 
-  const [stages, setStages] = useState([{ duration: "", target: "" }]);
+  const [userData, setUserData] = useState({
+    username: "",
+    password: "",
+    confirmPassword: ""
+  });
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleStageChange = (index, field, value) => {
-    const updated = [...stages];
-    updated[index][field] = value;
-    setStages(updated);
-  };
-
-  const handleAddStage = () => {
-    setStages([...stages, { duration: "", target: "" }]);
-  };
-
-  const handleRemoveStage = (index) => {
-    if (stages.length <= 1) return;
-    const updated = stages.filter((_, i) => i !== index);
-    setStages(updated);
-  };
-
-  const handleLaunchTest = () => {
-    const formatted = stages.map((stage) => ({
-      duration: stage.duration.endsWith("s")
-        ? stage.duration
-        : `${stage.duration}s`,
-      target: parseInt(stage.target),
+  const handleInputChange = (field, value) => {
+    setUserData(prev => ({
+      ...prev,
+      [field]: value
     }));
-    onLaunch(formatted);
+  };
+
+  const handleSubmit = async () => {
+    // Validate inputs
+    if (!userData.username || !userData.password || !userData.confirmPassword) {
+      setError("All fields are required");
+      return;
+    }
+    
+    if (userData.password !== userData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    
+    if (userData.password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      const token = sessionStorage.getItem("authToken"); // Retrieve token from session storage
+      const response = await fetch("http://localhost:6060/users/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}` // Add Authorization header
+        },
+        body: JSON.stringify({
+          username: userData.username,
+          password: userData.password
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to add user");
+      }
+
+      const data = await response.json();
+      onUserAdded(data); // Pass the new user data back to parent
+      onClose(); // Close the modal
+    } catch (err) {
+      setError(err.message || "An error occurred while adding the user");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -93,6 +129,19 @@ const AddUserModal = ({ isOpen, onClose, onLaunch }) => {
           </button>
         </div>
 
+        {error && (
+          <div style={{
+            color: "#e53e3e",
+            marginBottom: "16px",
+            padding: "8px",
+            backgroundColor: "rgba(229, 62, 62, 0.1)",
+            borderRadius: "4px",
+            fontSize: "14px"
+          }}>
+            {error}
+          </div>
+        )}
+
         <div
           style={{
             maxHeight: "60vh",
@@ -101,149 +150,111 @@ const AddUserModal = ({ isOpen, onClose, onLaunch }) => {
             marginBottom: "20px",
           }}
         >
-          {stages.map((stage, index) => (
-            <div
-              key={index}
-              style={{
-                backgroundColor: "rgba(45, 55, 72, 0.5)",
-                borderRadius: "8px",
-                padding: "16px",
-                marginBottom: "16px",
-                border: "1px solid #2d3748",
-                position: "relative",
-              }}
-            >
-              {stages.length > 1 && (
-                <button
-                  onClick={() => handleRemoveStage(index)}
-                  style={{
-                    position: "absolute",
-                    top: "8px",
-                    right: "8px",
-                    background: "rgba(160, 174, 192, 0.2)",
-                    border: "none",
-                    borderRadius: "50%",
-                    zIndex: 1,
-                    width: "24px",
-                    height: "24px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#e53e3e",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.background = "rgba(229, 62, 62, 0.2)";
-                    e.currentTarget.color = "#fff";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.background = "rgba(160, 174, 192, 0.2)";
-                    e.currentTarget.color = "#e53e3e";
-                  }}
-                >
-                  <FiX size={14} />
-                </button>
-              )}
-
-              <div style={{ marginBottom: "16px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "8px",
-                    fontSize: "14px",
-                    color: "#a0aec0",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                >
-                  <FiClock size={16} />
-                  Duration (seconds)
-                </label>
-                <input
-                  type="number"
-                  value={stage.duration}
-                  onChange={(e) =>
-                    handleStageChange(index, "duration", e.target.value)
-                  }
-                  style={{
-                    width: "47%",
-                    padding: "10px 12px",
-                    borderRadius: "6px",
-                    border: "1px solid #4a5568",
-                    background: "#2d3748",
-                    color: "#f7fafc",
-                    fontSize: "14px",
-                  }}
-                  placeholder="e.g. 30"
-                />
-              </div>
-              <div style={{ marginBottom: "16px", position: "absolute", top: "9.5%", right: "1px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "8px",
-                    fontSize: "14px",
-                    color: "#a0aec0",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                >
-                  <FiClock size={16} />
-                  Iterations
-                </label>
-                <input
-                  type="number"
-                  
-                  style={{
-                    width: "89%",
-                    padding: "10px 12px",
-                    borderRadius: "6px",
-                    border: "1px solid #4a5568",
-                    background: "#2d3748",
-                    color: "#f7fafc",
-                    fontSize: "14px",
-                  }}
-                  placeholder="e.g. 30"
-                />
-              </div>
-              <div>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "8px",
-                    fontSize: "14px",
-                    color: "#a0aec0",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                >
-                  <FiUsers size={16} />
-                  Target Users
-                </label>
-                <input
-                  type="number"
-                  value={stage.target}
-                  onChange={(e) =>
-                    handleStageChange(index, "target", e.target.value)
-                  }
-                  style={{
-                    width: "100%",
-                    padding: "10px 12px",
-                    borderRadius: "6px",
-                    border: "1px solid #4a5568",
-                    background: "#2d3748",
-                    color: "#f7fafc",
-                    fontSize: "14px",
-                  }}
-                  placeholder="e.g. 100"
-                />
-              </div>
+          <div
+            style={{
+              backgroundColor: "rgba(45, 55, 72, 0.5)",
+              borderRadius: "8px",
+              padding: "16px",
+              marginBottom: "16px",
+              border: "1px solid #2d3748",
+            }}
+          >
+            <div style={{ marginBottom: "16px" }}>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontSize: "14px",
+                  color: "#a0aec0",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <FiUsers size={16} />
+                Username
+              </label>
+              <input
+                type="text"
+                value={userData.username}
+                onChange={(e) => handleInputChange("username", e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  borderRadius: "6px",
+                  border: "1px solid #4a5568",
+                  background: "#2d3748",
+                  color: "#f7fafc",
+                  fontSize: "14px",
+                }}
+                placeholder="Enter username"
+              />
             </div>
-          ))}
+            
+            <div style={{ marginBottom: "16px" }}>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontSize: "14px",
+                  color: "#a0aec0",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <FiLock size={16} />
+                Password
+              </label>
+              <input
+                type="password"
+                value={userData.password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  borderRadius: "6px",
+                  border: "1px solid #4a5568",
+                  background: "#2d3748",
+                  color: "#f7fafc",
+                  fontSize: "14px",
+                }}
+                placeholder="Enter password"
+              />
+            </div>
+            
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontSize: "14px",
+                  color: "#a0aec0",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <FiLock size={16} />
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                value={userData.confirmPassword}
+                onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  borderRadius: "6px",
+                  border: "1px solid #4a5568",
+                  background: "#2d3748",
+                  color: "#f7fafc",
+                  fontSize: "14px",
+                }}
+                placeholder="Confirm password"
+              />
+            </div>
+          </div>
         </div>
 
         <div
@@ -278,10 +289,11 @@ const AddUserModal = ({ isOpen, onClose, onLaunch }) => {
             Cancel
           </button>
           <button
-            onClick={handleLaunchTest}
+            onClick={handleSubmit}
+            disabled={isSubmitting}
             style={{
               padding: "10px 20px",
-              background: "#4299e1",
+              background: isSubmitting ? "#2c5282" : "#4299e1",
               border: "none",
               borderRadius: "6px",
               color: "white",
@@ -292,22 +304,27 @@ const AddUserModal = ({ isOpen, onClose, onLaunch }) => {
               display: "flex",
               alignItems: "center",
               gap: "8px",
+              opacity: isSubmitting ? 0.7 : 1,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.background = "#3182ce";
+              if (!isSubmitting) {
+                e.currentTarget.background = "#3182ce";
+              }
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.background = "#4299e1";
-            }}
-            onMouseDown={(e) => {
-              e.currentTarget.background = "#2c5282";
-            }}
-            onMouseUp={(e) => {
-              e.currentTarget.background = "#3182ce";
+              if (!isSubmitting) {
+                e.currentTarget.background = "#4299e1";
+              }
             }}
           >
-            <FiPlay size={16} />
-            Launch Test
+            {isSubmitting ? (
+              "Adding..."
+            ) : (
+              <>
+                <FiPlus size={16} />
+                Add User
+              </>
+            )}
           </button>
         </div>
       </div>
