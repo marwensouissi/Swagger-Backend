@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaCloud, FaServer, FaArrowLeft, FaChartLine, FaExternalLinkAlt } from 'react-icons/fa';
+import { FaCloud, FaServer, FaArrowLeft, FaChartLine, FaFileExport } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
-const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
 
+const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
   const [hoveredOption, setHoveredOption] = useState(null);
   const [running, setRunning] = useState(false);
   const [logs, setLogs] = useState('');
@@ -13,15 +13,75 @@ const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
   const [dashboardAvailable, setDashboardAvailable] = useState(false);
   const logContainerRef = useRef(null);
   const [dashboardPort, setDashboardPort] = useState(null);
+  const [keyInput, setKeyInput] = useState('');
+  const [extractedValues, setExtractedValues] = useState([]);
 
-
-
+  // Auto-scroll logs
   useEffect(() => {
     if (logContainerRef.current) {
       logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
     }
   }, [logs]);
 
+  
+  const handleExtractValues = () => {
+  if (!keyInput) {
+    alert('Please enter a key to search.');
+    return;
+  }
+
+  try {
+    const matches = [];
+    const lines = logs.split('\n');
+
+    lines.forEach(line => {
+      // Look for the specific pattern in your logs
+      if (line.includes('🧪 idedd response:')) {
+        const responseIndex = line.indexOf('🧪 idedd response:');
+        const jsonPart = line.slice(responseIndex + '🧪 idedd response:'.length).trim();
+        
+        // Find all occurrences of the key
+        let keyPos = jsonPart.indexOf(`"${keyInput}"`);
+        while (keyPos !== -1) {
+          // Find the value after the key
+          const valueStart = jsonPart.indexOf(':', keyPos) + 1;
+          if (valueStart > 0) {
+            let valueEnd = jsonPart.indexOf(',', valueStart);
+            if (valueEnd === -1) valueEnd = jsonPart.indexOf('}', valueStart);
+            if (valueEnd === -1) valueEnd = jsonPart.length;
+            
+            let value = jsonPart.slice(valueStart, valueEnd).trim();
+            
+            // Clean up the value
+            if (value.startsWith('"') && value.endsWith('"')) {
+              value = value.slice(1, -1);
+            }
+            
+            if (value) {
+              matches.push(value);
+            }
+          }
+          keyPos = jsonPart.indexOf(`"${keyInput}"`, keyPos + 1);
+        }
+      }
+    });
+
+    setExtractedValues(matches);
+
+    if (matches.length === 0) {
+      console.log('No matches found in logs:', logs);
+      alert(`No values found for "${keyInput}" in the response lines.`);
+    } else {
+      console.log(`Found values for "${keyInput}":`, matches);
+      alert(`Found values for "${keyInput}":\n${matches.join('\n')}`);
+    }
+  } catch (error) {
+    console.error('Extraction error:', error);
+    alert('Error extracting values. Check console for details.');
+  }
+};
+
+  // Rest of your component code remains the same...
   const openDashboard = () => {
     if (dashboardPort) {
       window.open(`http://localhost:${dashboardPort}`, '_blank');
@@ -63,18 +123,11 @@ const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
           setDashboardAvailable(true);
         }
 
-        if (
-          e.data.toLowerCase().includes('web dashboard') ||
-          e.data.includes('dashboard available')
-        ) {
+        if (e.data.toLowerCase().includes('web dashboard') || e.data.includes('dashboard available')) {
           setDashboardAvailable(true);
         }
 
-        if (
-          e.data.includes('test finished with exit code') ||
-          e.data.includes('test completed') ||
-          e.data.includes('execution complete')
-        ) {
+        if (e.data.includes('test finished with exit code') || e.data.includes('test completed') || e.data.includes('execution complete')) {
           setTestCompleted(true);
           setRunning(false);
         }
@@ -119,30 +172,26 @@ const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
     setTestCompleted(false);
     setShowResults(false);
     setDashboardAvailable(false);
-
-  
   };
 
-const handleBackToOptions = () => {
-  if (window._k6EventSource) {
-    window._k6EventSource.close();
-    window._k6EventSource = null;
-  }
+  const handleBackToOptions = () => {
+    if (window._k6EventSource) {
+      window._k6EventSource.close();
+      window._k6EventSource = null;
+    }
 
-  setRunning(false);
-  setLogs('');
-  setError(null);
-  setStreamEnded(false);
-  setTestCompleted(false);
-  setShowResults(false);
-  setDashboardAvailable(false);
+    setRunning(false);
+    setLogs('');
+    setError(null);
+    setStreamEnded(false);
+    setTestCompleted(false);
+    setShowResults(false);
+    setDashboardAvailable(false);
 
-  // Notify parent to go back or close modal
-  if (onBack) {
-    onBack(); // This will show LaunchTestModal
-  }
-};
-  
+    if (onBack) {
+      onBack();
+    }
+  };
 
   return (
     <motion.div 
@@ -193,7 +242,6 @@ const handleBackToOptions = () => {
 
               <motion.button 
                 onClick={() => onSelectOption("k6-operator")} 
-                
                 className={`launch-btn cloud ${hoveredOption === 'cloud' ? 'btn-hovered' : ''}`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
@@ -220,16 +268,15 @@ const handleBackToOptions = () => {
             </div>
 
             <div className="modal-actions">
-            <motion.button 
-  className="cancel-btn"
-  onClick={handleBackToOptions}
-  whileHover={{ x: -3 }}
-  whileTap={{ scale: 0.95 }}
->
-  <FaArrowLeft style={{ marginRight: '8px' }} />
-  Back
-</motion.button>
-
+              <motion.button 
+                className="cancel-btn"
+                onClick={handleBackToOptions}
+                whileHover={{ x: -3 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FaArrowLeft style={{ marginRight: '8px' }} />
+                Back
+              </motion.button>
             </div>
 
             {!filename && (
@@ -241,21 +288,75 @@ const handleBackToOptions = () => {
         ) : (
           <>
             <div className="test-header">
-            <h2 className="modal-title" style={{ color: 'white' }}>
+              <h2 className="modal-title" style={{ color: 'white' }}>
                 {running ? 'Running Test: ' : 'Test Results: '}{filename}
                 {testCompleted && <span style={{ color: '#84BD00', marginLeft: '10px' }}>[COMPLETED]</span>}
                 {running && <span style={{ color: '#f39c12', marginLeft: '10px' }}>[RUNNING...]</span>}
               </h2>
+
+              <input
+                value={keyInput}
+                onChange={(e) => setKeyInput(e.target.value)}
+                type='text'
+                style={{
+                  width: "17%",
+                  padding: "10px 12px",
+                  borderRadius: "6px",
+                  border: "1px solid #4a5568",
+                  background: "#2d3748",
+                  color: "#f7fafc",
+                  fontSize: "14px",
+                }}
+                placeholder="Enter key to extract"
+              />
               
-              {(running || dashboardAvailable) && (
+              <motion.button
+                className="dashboard-btn"
+                onClick={handleExtractValues}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                Extract
+                <FaFileExport style={{ marginLeft: '8px', fontSize: '12px' }} />
+              </motion.button>
+<button 
+  onClick={() => {
+    const testLogs = `{
+  "output": " {INFO[0009] 📦 cred: {"softwareId":null,"customerId":{"entityType":"CUSTOMER","id":"13814000-1dd2-11b2-8080-808080808080"},"label":"Room 234 Sensor","deviceProfileId":{"entityType":"DEVICE_PROFILE","id":"23e20400-50db-11f0-9b8b-6b4e8677fc8a"},"deviceData":{"configuration":{"type":"DEFAULT"},"transportConfiguration":{"type":"DEFAULT"}},"id":{"id":"23e27930-50db-11f0-9b8b-6b4e8677fc8a","entityType":"DEVICE"},"externalId":null,"additionalInfo":null,"name":"poxrxjzrtztp","type":"Temperature Sensor","userCreatorId":{"entityType":"USER","id"
+:"1f7e34b0-50db-11f0-9b8b-6b4e8677fc8a"},"createdTime":1750756257859,"tenantId":{"id":"1f716370-50db-11f0-9b8b-6b4e8677fc8a","entityType":"TENANT"},"publicKey":"0xaaa437388b85fc7a3b0f972f35f0314549b62516","firmwareId":null}  source=console
+INFO[0009] 📦 cred: {"privateKey":"0xedd2b0fb6fc940d09f57d6a31cbe5ceb54d1fd71b771b409a14ba4e828067878","id":{"id":"24014bd0-50db-11f0-9b8b-6b4e8677fc8a"},"createdTime":1750756258061,"deviceId":{"entityType":"DEVICE","id":"23e27930-50db-11f0-9b8b-6b4e8677fc8a"},"credentialsType":"ACCESS_TOKEN","credentialsId":"WcW9z7al3bIetnG3fO4l","credentialsValue":null}  source=console
+INFO[0015] 📦 cred: {"id":{"entityType":"DEVICE","id":"278fc9c0-50db-11f0-9b8b-6b4e8677fc8a"},"publicKey":"0xc92562d7c8e3e053b831087e62f3d5a57ffba928","deviceProfileId":{"entityType":"DEVICE_PROFILE","id":"278f7ba0-50db-11f0-9b8b-6b4e8677fc8a"},"type":"Temperature Sensor","label":"Room 234 Sensor","deviceData":{"configuration":{"type":"DEFAULT"},"transportConfiguration":{"type":"DEFAULT"}},"additionalInfo":null,"tenantId":{"entityType":"TENANT","id":"236bc290-50db-11f0-9b8b-6b4e8677fc8a"},"name":"oalwdabphvdi","firmwareId":null,"softw
+areId":null,"externalId":null,"userCreatorId":{"entityType":"USER","id":"237140d0-50db-11f0-9b8b-6b4e8677fc8a"},"createdTime":1750756264028,"customerId":{"entityType":"CUSTOMER","id":"13814000-1dd2-11b2-8080-808080808080"}}  source=console
+INFO[0015] 📦 cred: {"credentialsType":"ACCESS_TOKEN","credentialsId":"MTv5alTDDlJfjEoVsALM","credentialsValue":null,"privateKey":"0x4e97ecf4dc6500779fb098501b335766396677d0cc7d85474b89ef007b9c48c1","id":{"id":"27b29400-50db-11f0-9b8b-6b4e8677fc8a"},"createdTime":1750756264256,"deviceId":{"entityType":"DEVICE","id":"278fc9c0-50db-11f0-9b8b-6b4e8677fc8a"}}  source=console
+INFO[0015] 📦 cred: {"additionalInfo":null,"type":"Temperature Sensor","deviceData":{"configuration":{"type":"DEFAULT"},"transportConfiguration":{"type":"DEFAULT"}},"externalId":null,"tenantId":{"entityType":"TENANT","id":"24337f60-50db-11f0-9b8b-6b4e8677fc8a"},"customerId":{"entityType":"CUSTOMER","id":"13814000-1dd2-11b2-8080-808080808080"},"deviceProfileId":{"id":"27f3e2c0-50db-11f0-9b8b-6b4e8677fc8a","entityType":"DEVICE_PROFILE"},"softwareId":null,"id":{"entityType":"DEVICE","id":"27f4cd20-50db-11f0-9b8b-6b4e8677fc8a"},"createdTi
+me":1750756264690,"userCreatorId":{"entityType":"USER","id":"24379e10-50db-11f0-9b8b-6b4e8677fc8a"},"name":"xnkazszjznim","label":"Room 234 Sensor","publicKey":"0xe13f4a5582884aa50e4b4524f10769d4e5991f95","firmwareId":null}  source=console
+INFO[0016] 📦 cred: {"credentialsId":"SEYyYPX2825pZzAhE9rS","credentialsValue":null,"privateKey":"0x157558231506d59fc766865ce42303256652943ff2fba01c230bcf1c007ae34b","id":{"id":"2819ba40-50db-11f0-9b8b-6b4e8677fc8a"},"createdTime":1750756264932,"deviceId":{"entityType":"DEVICE","id":"27f4cd20-50db-11f0-9b8b-6b4e8677fc8a"},"credentialsType":"ACCESS_TOKEN"}  source=console
+`;
+    setLogs(testLogs);
+    setKeyInput('id');
+    setTimeout(handleExtractValues, 100);
+  }}
+  style={{
+    padding: '0.5rem 1rem',
+    background: '#4CAF50',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    margin: '0.5rem',
+    cursor: 'pointer'
+  }}
+>
+  Test Extraction
+</button>
+              {dashboardAvailable && (
                 <motion.button
                   className="dashboard-btn"
                   onClick={openDashboard}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
                 >
                   Open Dashboard
                   <FaChartLine style={{ marginLeft: '8px', fontSize: '12px' }} />
@@ -269,7 +370,35 @@ const handleBackToOptions = () => {
             >
               {logs || "Waiting for output..."}
             </pre>
-      
+
+            {extractedValues.length > 0 && (
+              <div style={{
+                margin: '1rem 0',
+                padding: '1rem',
+                background: '#1a1a1a',
+                borderRadius: '8px',
+                border: '1px solid #333'
+              }}>
+                <h4 style={{ margin: '0 0 0.5rem 0', color: '#4CAF50' }}>
+                  Extracted Values for "{keyInput}"
+                </h4>
+                {extractedValues.map((value, i) => (
+                  <pre key={i} style={{
+                    margin: '0.5rem 0',
+                    padding: '0.75rem',
+                    background: '#222',
+                    borderRadius: '6px',
+                    border: '1px solid #444',
+                    color: '#f0f0f0',
+                    whiteSpace: 'pre-wrap',
+                    overflowX: 'auto'
+                  }}>
+                    {value}
+                  </pre>
+                ))}
+              </div>
+            )}
+
             <div className="modal-actions">
               {testCompleted ? (
                 <>
@@ -401,11 +530,11 @@ const handleBackToOptions = () => {
         }
         
         .launch-btn.cloud {
-        margin: auto;
+          margin: auto;
         }
 
         .launch-btn.local {
-        margin: auto;
+          margin: auto;
         }
         
         .launch-btn.btn-hovered {

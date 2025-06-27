@@ -374,6 +374,25 @@ class App extends React.Component {
         >
           K6 Functions
         </button>
+
+          <button
+    onClick={() => this.setState({ showAddUserModal: true })}
+    style={{
+      position: "fixed",
+      top: "22px",
+      right: "220px",
+      zIndex: 1000,
+      padding: "10px 24px",
+      borderRadius: "6px",
+      backgroundColor: "#007bff",
+      color: "#fff",
+      border: "none",
+      marginRight: "12px",
+      cursor: "pointer"
+    }}
+  >
+    Check mqtt
+  </button>
 {this.state.role === "admin" && (
   <button
     onClick={() => this.setState({ showAddUserModal: true })}

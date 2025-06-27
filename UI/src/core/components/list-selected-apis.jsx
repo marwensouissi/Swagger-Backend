@@ -14,11 +14,19 @@ const ListSelectedApis = ({ swaggerFilename }) => {
   const [generatedFilename, setGeneratedFilename] = useState(null);
   const [showLaunchModal, setShowLaunchModal] = useState(true);
   const [showExecutionOptions, setShowExecutionOptions] = useState(false);
+  const [showMQTTExecutionOptions, setShowMQTTExecutionOptions] = useState(false); // New state for MQTT
   const [activeTab, setActiveTab] = useState('HTTP');
 
   const handleBackToLaunchModal = () => {
     setShowExecutionOptions(false);
     setShowLaunchModal(true);
+  };
+
+    const handleMQTTExecution = () => {
+    // Logic to generate MQTT-specific filename or payload
+    const mqttFilename = "mqtt_test_file.js"; // Replace with actual logic if needed
+    setGeneratedFilename(mqttFilename);
+    setShowMQTTExecutionOptions(true);
   };
 
   const apiData = useSelector((state) => {
@@ -52,46 +60,49 @@ const ListSelectedApis = ({ swaggerFilename }) => {
   };
 
 const handleLaunchTest = async (stages) => {
+  // Filter only HTTP APIs
+  const httpTestCases = apiData
+    .filter(({ method, functionName }) => HTTP_METHODS.includes(method) && !!functionName)
+    .map(({ api, method, bodyValue, functionName, params }) => {
+      let url = api.replace(/\{\?.*?\}/, ''); // Remove query params
+      let baseUrl = url.split('/').slice(0, 2).join('/');
+      if (!baseUrl.startsWith('/')) baseUrl = '/' + baseUrl;
+
+      const paramFields = {};
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          if (key.endsWith('-path')) {
+            const paramName = key.replace('-path', '');
+            paramFields[paramName] = value;
+          }
+        });
+      }
+
+      const testCase = {
+        function: functionName,
+        method,
+        url,
+        save_as: functionName,
+        ...paramFields,
+      };
+
+      if (['POST', 'PUT', 'PATCH'].includes(method.toUpperCase()) && bodyValue) {
+        try {
+          testCase.payload = JSON.parse(bodyValue);
+        } catch (e) {
+          console.error('Invalid JSON body:', bodyValue);
+          testCase.payload = {};
+        }
+      }
+
+      return testCase;
+    });
+
   // Combine stages with test cases
   const payload = {
     swagger_filename: swaggerFilename,
     stages: stages,
-    test_cases: apiData
-      .filter(({ functionName }) => !!functionName)
-      .map(({ api, method, bodyValue, functionName, params }) => {
-        let url = api.replace(/\{\?.*?\}/, '');
-        let baseUrl = url.split('/').slice(0, 2).join('/');
-        if (!baseUrl.startsWith('/')) baseUrl = '/' + baseUrl;
-
-        const paramFields = {};
-        if (params) {
-          Object.entries(params).forEach(([key, value]) => {
-            if (key.endsWith('-path')) {
-              const paramName = key.replace('-path', '');
-              paramFields[paramName] = value;
-            }
-          });
-        }
-
-        const testCase = {
-          function: functionName,
-          method,
-          url: baseUrl,
-          save_as: functionName,
-          ...paramFields
-        };
-
-        if (['POST', 'PUT', 'PATCH'].includes(method.toUpperCase()) && bodyValue) {
-          try {
-            testCase.payload = JSON.parse(bodyValue);
-          } catch (e) {
-            console.error('Invalid JSON body:', bodyValue);
-            testCase.payload = {};
-          }
-        }
-
-        return testCase;
-      })
+    test_cases: httpTestCases, // Only HTTP APIs are included
   };
 
   console.log("Complete payload:", payload);
@@ -115,83 +126,6 @@ const handleLaunchTest = async (stages) => {
     console.error('Error launching test:', error);
   }
 };
-
-  const generateRandomId = () => {
-    // Generates a random 20-character alphanumeric string
-    return Array.from({ length: 20 }, () =>
-      Math.random().toString(36).charAt(2)
-    ).join('');
-  };
-
-  const generateFinalResult = (stageInput, apiData, swaggerFilename) => {
-    const stages = stageInput.map(stage => {
-      if (stage.iterations && stage.vus) {
-        return {
-          iterations: parseInt(stage.iterations),
-          vus: parseInt(stage.vus),
-        };
-      } else if (stage.duration && stage.target) {
-        return {
-          duration: stage.duration.endsWith('s') ? stage.duration : `${stage.duration}s`,
-          target: Number(stage.target),
-        };
-      } else {
-        throw new Error("Each stage must have either iterations and vus, or duration and target.");
-      }
-    });
-
-    const test_cases = apiData
-      .filter(({ functionName }) => !!functionName)
-      .map(({ api, method, bodyValue, functionName, params }) => {
-        // Remove query params from api path
-        let url = api.replace(/\{\?.*?\}/, '');
-        let baseUrl = url.split('/').slice(0, 2).join('/'); // e.g. "/run-mqtt-test"
-        if (!baseUrl.startsWith('/')) baseUrl = '/' + baseUrl;
-
-        // Extract path parameter values and use actual parameter names
-        const paramFields = {};
-        if (params) {
-          Object.entries(params).forEach(([key, value]) => {
-            if (key.endsWith('-path')) {
-              const paramName = key.replace('-path', '');
-              paramFields[paramName] = value;
-            }
-          });
-        }
-
-        // Build testCase object
-        const testCase = {
-          function: functionName,
-          method,
-          url: baseUrl,
-          save_as: functionName,
-          ...paramFields // Spread actual parameter names and values
-        };
-
-        if (['POST', 'PUT', 'PATCH'].includes(method.toUpperCase()) && bodyValue) {
-          try {
-            testCase.payload = JSON.parse(bodyValue);
-          } catch (e) {
-            console.error('Invalid JSON body:', bodyValue);
-            testCase.payload = {};
-          }
-        }
-
-        // --- MQTT credentials generation ---
-        if (method.toUpperCase() === "MQTT" && testCase.device_count) {
-          const count = parseInt(testCase.device_count, 10);
-          if (!isNaN(count) && count > 0) {
-            testCase.credentials = Array.from({ length: count }, () => ({
-              credentialsId: generateRandomId()
-            }));
-          }
-        }
-
-        return testCase;
-      });
-
-    return { swagger_filename: swaggerFilename, stages, test_cases };
-  };
 
   const getMethodColor = (method) => {
     switch (method.toLowerCase()) {
@@ -271,6 +205,14 @@ const handleLaunchTest = async (stages) => {
         swaggerFilename={swaggerFilename} // Add this line
 
       />
+        {showMQTTExecutionOptions && (
+  <ChooseExecutionOption
+    filename={generatedFilename}
+    onBack={() => setShowMQTTExecutionOptions(false)} // Close MQTT modal and go back
+    onClose={() => setShowMQTTExecutionOptions(false)}
+  />
+)}
+
 
       {showExecutionOptions ? (
         <ChooseExecutionOption
@@ -319,7 +261,7 @@ const handleLaunchTest = async (stages) => {
                       });
 
                       if (queryParams.length > 0) {
-                        displayApi += `?${queryParams.join('&')}`;
+                        displayApi;
                       }
                     }
 
@@ -440,7 +382,44 @@ const handleLaunchTest = async (stages) => {
                         </button>
                       </li>
                     );
+
+                    
                   })}
+
+                    <button
+              style={{
+                padding: '7px 11px',
+                backgroundColor: '#2ea44f',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '6px',
+                fontSize: '14px',
+                position: 'absolute',
+                top: '607px',
+                right: '208px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'background-color 0.2s ease',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+              }}
+              onClick={() => setModalOpen(true)}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#2c974b';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#2ea44f';
+              }}
+              onMouseDown={(e) => {
+                e.target.style.backgroundColor = '#298e46';
+                e.target.style.boxShadow = 'inset 0 1px 3px rgba(0, 0, 0, 0.1)';
+              }}
+              onMouseUp={(e) => {
+                e.target.style.backgroundColor = '#2c974b';
+                e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+              }}
+            >
+              Add APIs to Test
+            </button>
                 </ul>
               )
             ) : (
@@ -475,7 +454,7 @@ const handleLaunchTest = async (stages) => {
                       });
 
                       if (queryParams.length > 0) {
-                        displayApi += `?${queryParams.join('&')}`;
+                        displayApi;
                       }
                     }
 
@@ -594,34 +573,27 @@ const handleLaunchTest = async (stages) => {
                         >
                           Remove
                         </button>
+
+                        
                       </li>
                     );
                   })}
-                </ul>
-              )
-            )}
-          </div>
-
-          <div style={{
-            padding: '12px',
-            borderTop: '1px solid #eaecef',
-            textAlign: 'center',
-            backgroundColor: '#f6f8fa'
-          }}>
-            <button
+                    <button
               style={{
                 padding: '7px 11px',
-                backgroundColor: '#2ea44f',
+                backgroundColor: '#897e06',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '6px',
                 fontSize: '14px',
+                position: 'absolute',
+                top: '607px',
+                right: '208px',
                 fontWeight: 600,
                 cursor: 'pointer',
                 transition: 'background-color 0.2s ease',
                 boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
               }}
-              onClick={() => setModalOpen(true)}
               onMouseEnter={(e) => {
                 e.target.style.backgroundColor = '#2c974b';
               }}
@@ -636,9 +608,23 @@ const handleLaunchTest = async (stages) => {
                 e.target.style.backgroundColor = '#2c974b';
                 e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
               }}
+                      onClick={handleMQTTExecution} // Opens ChooseExecutionOption for MQTT
+
             >
-              Add APIs to Test
+              Add MQTT
             </button>
+                </ul>
+              )
+            )}
+          </div>
+
+          <div style={{
+            padding: '12px',
+            borderTop: '1px solid #eaecef',
+            textAlign: 'center',
+            backgroundColor: '#f6f8fa'
+          }}>
+          
           </div>
         </>
       )}
