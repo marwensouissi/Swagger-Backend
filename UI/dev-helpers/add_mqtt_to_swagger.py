@@ -3,13 +3,27 @@ import sys
  
 def add_mqtt_endpoint_with_path_params(swagger_json):
     mqtt_path = {
-        "/run-mqtt-test/{VU_COUNT}/{duration}/{broker}/{port}/{topic}/{password}": {
+        "/run-mqtt-test/{device_count}/{token}/{VU_COUNT}/{duration}/{broker}/{port}/{topic}/{password}": {
             "post": {
                 "tags": ["mqtt-controller"],
                 "summary": "Run MQTT Load Test via Path Params",
                 "description": "Runs MQTT load test using parameters passed directly in the URL path.",
                 "operationId": "runMqttTestWithParams",
                 "parameters": [
+                    {
+                        "name": "device_count",
+                        "in": "path",
+                        "required": True,
+                        "schema": {"type": "integer"},
+                        "description": "Number of devices to create and use for testing"
+                    },
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": True,
+                        "schema": {"type": "string"},
+                        "description": "JWT token for ThingsBoard API access"
+                    },
                     {
                         "name": "VU_COUNT",
                         "in": "path",

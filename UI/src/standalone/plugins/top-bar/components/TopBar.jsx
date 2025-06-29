@@ -23,7 +23,10 @@ class TopBar extends React.Component {
       selectedIndex: 0,
       showUploadModal: false,
       customSpecs: [], // Store uploaded specs here
-     uploadedSpecs: [] // <-- add this
+      uploadedSpecs: [], // <-- add this
+      hasMqtt: false, // Track MQTT injection status
+      isCheckingMqtt: false, // Loading state for MQTT check
+      isInjectingMqtt: false // Loading state for MQTT injection
     }
     
   }
@@ -51,9 +54,75 @@ handleUploadSuccess = (newSpec) => {
   this.loadSpec(newSpec.url);
 }
 
+checkMqttStatus = async () => {
+  const filename = this.getCurrentSwaggerFilename();
+  if (!filename) {
+    console.log('[checkMqttStatus] No filename found');
+    return;
+  }
 
+  this.setState({ isCheckingMqtt: true });
+  try {
+    console.log(`[checkMqttStatus] Checking MQTT for: ${filename}`);
+    const response = await fetch(`http://localhost:6060/mqtt/check-mqtt?filename=${encodeURIComponent(filename)}`);
+    if (response.ok) {
+      const data = await response.json();
+      console.log('[checkMqttStatus] API response:', data);
+      this.setState({ hasMqtt: data.injected });
+    } else {
+      console.error('[checkMqttStatus] API error:', response.status);
+      this.setState({ hasMqtt: false });
+    }
+  } catch (error) {
+    console.error('[checkMqttStatus] Exception:', error);
+    this.setState({ hasMqtt: false });
+  } finally {
+    this.setState({ isCheckingMqtt: false });
+  }
+}
 
-  flushAuthData() {
+injectMqtt = async () => {
+  const filename = this.getCurrentSwaggerFilename();
+  console.log('[injectMqtt] Current filename:', filename); // Debug log
+  if (!filename) {
+    console.log('[injectMqtt] No filename found', filename);
+    alert('No Swagger file selected');
+    return;
+  }
+
+  this.setState({ isInjectingMqtt: true });
+  try {
+    console.log(`[injectMqtt] Injecting MQTT for: ${filename}`);
+    const response = await fetch(`http://localhost:6060/mqtt/inject-mqtt?filename=${encodeURIComponent(filename)}`, {
+      method: 'POST'
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('[injectMqtt] API response:', data);
+      alert(data.message || 'MQTT injected successfully!');
+      this.setState({ hasMqtt: true });
+
+      // Force Swagger UI to reload the file with a cache-busting query
+      const currentUrl = this.props.specSelectors.url();
+      const cacheBustedUrl = currentUrl + (currentUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
+      console.log('[injectMqtt] Reloading spec with URL:', cacheBustedUrl);
+      this.props.specActions.updateUrl(cacheBustedUrl);
+      this.props.specActions.download(cacheBustedUrl);
+    } else {
+      const errorData = await response.json();
+      console.error('[injectMqtt] API error:', errorData);
+      alert(`Error: ${errorData.detail || 'Failed to inject MQTT'}`);
+    }
+  } catch (error) {
+    console.error('[injectMqtt] Exception:', error);
+    alert('Error injecting MQTT. Please try again.');
+  } finally {
+    this.setState({ isInjectingMqtt: false });
+  }
+}
+
+flushAuthData() {
     const { persistAuthorization } = this.props.getConfigs()
     if (persistAuthorization)
     {
@@ -143,13 +212,14 @@ handleUploadSuccess = (newSpec) => {
   }
 
 
-  // Inside the TopBar component
 getCurrentSwaggerFilename = () => {
   const currentUrl = this.props.specSelectors.url();
   console.log("Current URL in getCurrentSwaggerFilename:", currentUrl); // Debug log
-  return currentUrl?.split('/').pop() || null;
+  if (!currentUrl) return null;
+  // Remove query string if present
+  const cleanUrl = currentUrl.split('?')[0];
+  return cleanUrl.split('/').pop();
 };
-
 
  setSelectedUrl = (selectedUrl) => {
   const configs = this.props.getConfigs()
@@ -171,25 +241,26 @@ const allSpecs = [
   }
 }
 
- // In TopBar component
-componentDidUpdate(prevProps) {
-  if (this.props.specSelectors.url() !== prevProps.specSelectors.url()) {
-    const updatedFilename = this.getCurrentSwaggerFilename();
-    console.log("Updated Swagger filename:", updatedFilename);
-    // If you need to store it in state (though you might not need to)
-    this.setState({ swaggerFilename: updatedFilename });
+// Update componentDidUpdate to better handle file changes
+  componentDidUpdate(prevProps) {
+    const currentUrl = this.props.specSelectors.url();
+    const prevUrl = prevProps.specSelectors.url();
+    
+    if (currentUrl !== prevUrl) {
+      const updatedFilename = this.getCurrentSwaggerFilename();
+      console.log("Swagger file changed to:", updatedFilename);
+      
+      // Reset MQTT status when file changes
+      this.setState({ hasMqtt: false });
+      
+      // Check MQTT status for the new file
+      setTimeout(() => {
+        this.checkMqttStatus();
+      }, 500);
+    }
   }
-}
 
-getCurrentSwaggerFilename() {
-  const currentUrl = this.props.specSelectors.url();
-  // Extract filename from URL (handles both local and remote files)
-  const filename = currentUrl?.split('/').pop() || null;
-  console.log("Current Swagger filename:", filename);
-  return filename;
-}
-
-
+  // Update componentDidMount
   componentDidMount() {
     const configs = this.props.getConfigs()
     const urls = configs.urls || []
@@ -211,9 +282,25 @@ getCurrentSwaggerFilename() {
 
       this.loadSpec(urls[targetIndex].url)
     }
-      this.fetchUploadedSpecs();
-
+    
+    this.fetchUploadedSpecs();
+    
+    // Check MQTT status on initial load with delay
+    setTimeout(() => {
+      this.checkMqttStatus();
+    }, 2000);
   }
+
+
+getCurrentSwaggerFilename() {
+  const currentUrl = this.props.specSelectors.url();
+  // Extract filename from URL (handles both local and remote files)
+  const filename = currentUrl?.split('/').pop() || null;
+  console.log("Current Swagger filename:", filename);
+  return filename;
+}
+
+
 
   onFilterChange =(e) => {
     let {target: {value}} = e
@@ -302,6 +389,17 @@ if (allSpecs.length) {
   const hasSecurityDefinitions = !!specSelectors.securityDefinitions()
   const AuthorizeBtnContainer = getComponent("AuthorizeBtnContainer", true)
 
+  // Show MQTT button only if current file doesn't have MQTT and we have a valid filename
+  const showMqttButton = !this.state.hasMqtt && 
+                          swaggerFilename && 
+                          !this.state.isCheckingMqtt;
+
+                   console.log('Render - showMqttButton:', showMqttButton, {
+      hasMqtt: this.state.hasMqtt,
+      swaggerFilename,
+      isCheckingMqtt: this.state.isCheckingMqtt
+    });        
+
   return (
           <div className="topbar">
         <div className="wrapper">
@@ -321,6 +419,24 @@ if (allSpecs.length) {
               >
                 Upload JSON
               </Button>
+
+              {/* Add MQTT Injection button - only show if MQTT not already injected */}
+              {showMqttButton && (
+                <Button 
+                  className="mqtt-btn"
+                  onClick={this.injectMqtt}
+                  disabled={this.state.isInjectingMqtt}
+                  style={{ 
+                    marginLeft: '10px',
+                    backgroundColor: '#4CAF50',
+                    color: 'white',
+                    cursor: this.state.isInjectingMqtt ? 'not-allowed' : 'pointer'
+
+                  }}
+                >
+                  {this.state.isInjectingMqtt ? 'Injecting...' : 'Inject MQTT'}
+                </Button>
+              )}
             </div>
 
               { /* (hasServers || hasSchemes || hasSecurityDefinitions) && (
@@ -365,6 +481,32 @@ const styles = `
     height: 40%;
     margin-bottom:15%;
     width: 60%;
+  }
+
+  .mqtt-btn {
+    background-color: #4CAF50 !important;
+    color: white !important;
+    border: 1px solid #4CAF50 !important;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+
+  .mqtt-btn:hover:not(:disabled) {
+    background-color: #45a049 !important;
+  }
+
+  .mqtt-btn:disabled {
+    background-color: #cccccc !important;
+    cursor: not-allowed;
+  }
+
+  .controls-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 `
 

@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaCloud, FaServer, FaArrowLeft, FaChartLine, FaExternalLinkAlt } from 'react-icons/fa';
+import { FaCloud, FaServer, FaArrowLeft, FaChartLine, FaFileExport } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
-const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
 
+const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
   const [hoveredOption, setHoveredOption] = useState(null);
   const [running, setRunning] = useState(false);
   const [logs, setLogs] = useState('');
@@ -13,15 +13,75 @@ const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
   const [dashboardAvailable, setDashboardAvailable] = useState(false);
   const logContainerRef = useRef(null);
   const [dashboardPort, setDashboardPort] = useState(null);
+  const [keyInput, setKeyInput] = useState('');
+  const [extractedValues, setExtractedValues] = useState([]);
 
-
-
+  // Auto-scroll logs
   useEffect(() => {
     if (logContainerRef.current) {
       logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
     }
   }, [logs]);
 
+  
+  const handleExtractValues = () => {
+  if (!keyInput) {
+    alert('Please enter a key to search.');
+    return;
+  }
+
+  try {
+    const matches = [];
+    const lines = logs.split('\n');
+
+    lines.forEach(line => {
+      // Look for the specific pattern in your logs
+      if (line.includes('🧪 idedd response:')) {
+        const responseIndex = line.indexOf('🧪 idedd response:');
+        const jsonPart = line.slice(responseIndex + '🧪 idedd response:'.length).trim();
+        
+        // Find all occurrences of the key
+        let keyPos = jsonPart.indexOf(`"${keyInput}"`);
+        while (keyPos !== -1) {
+          // Find the value after the key
+          const valueStart = jsonPart.indexOf(':', keyPos) + 1;
+          if (valueStart > 0) {
+            let valueEnd = jsonPart.indexOf(',', valueStart);
+            if (valueEnd === -1) valueEnd = jsonPart.indexOf('}', valueStart);
+            if (valueEnd === -1) valueEnd = jsonPart.length;
+            
+            let value = jsonPart.slice(valueStart, valueEnd).trim();
+            
+            // Clean up the value
+            if (value.startsWith('"') && value.endsWith('"')) {
+              value = value.slice(1, -1);
+            }
+            
+            if (value) {
+              matches.push(value);
+            }
+          }
+          keyPos = jsonPart.indexOf(`"${keyInput}"`, keyPos + 1);
+        }
+      }
+    });
+
+    setExtractedValues(matches);
+
+    if (matches.length === 0) {
+      console.log('No matches found in logs:', logs);
+      alert(`No values found for "${keyInput}" in the response lines.`);
+    } else {
+      console.log(`Found values for "${keyInput}":`, matches);
+      alert(`Found values for "${keyInput}":\n${matches.join('\n')}`);
+    }
+  } catch (error) {
+    console.error('Extraction error:', error);
+    alert('Error extracting values. Check console for details.');
+  }
+};
+
+  // Rest of your component code remains the same...
   const openDashboard = () => {
     if (dashboardPort) {
       window.open(`http://localhost:${dashboardPort}`, '_blank');
@@ -63,18 +123,11 @@ const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
           setDashboardAvailable(true);
         }
 
-        if (
-          e.data.toLowerCase().includes('web dashboard') ||
-          e.data.includes('dashboard available')
-        ) {
+        if (e.data.toLowerCase().includes('web dashboard') || e.data.includes('dashboard available')) {
           setDashboardAvailable(true);
         }
 
-        if (
-          e.data.includes('test finished with exit code') ||
-          e.data.includes('test completed') ||
-          e.data.includes('execution complete')
-        ) {
+        if (e.data.includes('test finished with exit code') || e.data.includes('test completed') || e.data.includes('execution complete')) {
           setTestCompleted(true);
           setRunning(false);
         }
@@ -119,30 +172,26 @@ const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
     setTestCompleted(false);
     setShowResults(false);
     setDashboardAvailable(false);
-
-  
   };
 
-const handleBackToOptions = () => {
-  if (window._k6EventSource) {
-    window._k6EventSource.close();
-    window._k6EventSource = null;
-  }
+  const handleBackToOptions = () => {
+    if (window._k6EventSource) {
+      window._k6EventSource.close();
+      window._k6EventSource = null;
+    }
 
-  setRunning(false);
-  setLogs('');
-  setError(null);
-  setStreamEnded(false);
-  setTestCompleted(false);
-  setShowResults(false);
-  setDashboardAvailable(false);
+    setRunning(false);
+    setLogs('');
+    setError(null);
+    setStreamEnded(false);
+    setTestCompleted(false);
+    setShowResults(false);
+    setDashboardAvailable(false);
 
-  // Notify parent to go back or close modal
-  if (onBack) {
-    onBack(); // This will show LaunchTestModal
-  }
-};
-  
+    if (onBack) {
+      onBack();
+    }
+  };
 
   return (
     <motion.div 
@@ -193,7 +242,6 @@ const handleBackToOptions = () => {
 
               <motion.button 
                 onClick={() => onSelectOption("k6-operator")} 
-                
                 className={`launch-btn cloud ${hoveredOption === 'cloud' ? 'btn-hovered' : ''}`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
@@ -220,16 +268,15 @@ const handleBackToOptions = () => {
             </div>
 
             <div className="modal-actions">
-            <motion.button 
-  className="cancel-btn"
-  onClick={handleBackToOptions}
-  whileHover={{ x: -3 }}
-  whileTap={{ scale: 0.95 }}
->
-  <FaArrowLeft style={{ marginRight: '8px' }} />
-  Back
-</motion.button>
-
+              <motion.button 
+                className="cancel-btn"
+                onClick={handleBackToOptions}
+                whileHover={{ x: -3 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FaArrowLeft style={{ marginRight: '8px' }} />
+                Back
+              </motion.button>
             </div>
 
             {!filename && (
@@ -241,21 +288,47 @@ const handleBackToOptions = () => {
         ) : (
           <>
             <div className="test-header">
-            <h2 className="modal-title" style={{ color: 'white' }}>
+              <h2 className="modal-title" style={{ color: 'white' }}>
                 {running ? 'Running Test: ' : 'Test Results: '}{filename}
                 {testCompleted && <span style={{ color: '#84BD00', marginLeft: '10px' }}>[COMPLETED]</span>}
                 {running && <span style={{ color: '#f39c12', marginLeft: '10px' }}>[RUNNING...]</span>}
               </h2>
+
+              <input
+                value={keyInput}
+                onChange={(e) => setKeyInput(e.target.value)}
+                type='text'
+                style={{
+                  width: "17%",
+                  padding: "10px 12px",
+                  borderRadius: "6px",
+                  border: "1px solid #4a5568",
+                  background: "#2d3748",
+                  color: "#f7fafc",
+                  fontSize: "14px",
+                }}
+                placeholder="Enter key to extract"
+              />
               
-              {(running || dashboardAvailable) && (
+              <motion.button
+                className="dashboard-btn"
+                onClick={handleExtractValues}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                Extract
+                <FaFileExport style={{ marginLeft: '8px', fontSize: '12px' }} />
+              </motion.button>
+
+              {dashboardAvailable && (
                 <motion.button
                   className="dashboard-btn"
                   onClick={openDashboard}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
                 >
                   Open Dashboard
                   <FaChartLine style={{ marginLeft: '8px', fontSize: '12px' }} />
@@ -269,7 +342,35 @@ const handleBackToOptions = () => {
             >
               {logs || "Waiting for output..."}
             </pre>
-      
+
+            {extractedValues.length > 0 && (
+              <div style={{
+                margin: '1rem 0',
+                padding: '1rem',
+                background: '#1a1a1a',
+                borderRadius: '8px',
+                border: '1px solid #333'
+              }}>
+                <h4 style={{ margin: '0 0 0.5rem 0', color: '#4CAF50' }}>
+                  Extracted Values for "{keyInput}"
+                </h4>
+                {extractedValues.map((value, i) => (
+                  <pre key={i} style={{
+                    margin: '0.5rem 0',
+                    padding: '0.75rem',
+                    background: '#222',
+                    borderRadius: '6px',
+                    border: '1px solid #444',
+                    color: '#f0f0f0',
+                    whiteSpace: 'pre-wrap',
+                    overflowX: 'auto'
+                  }}>
+                    {value}
+                  </pre>
+                ))}
+              </div>
+            )}
+
             <div className="modal-actions">
               {testCompleted ? (
                 <>
@@ -401,11 +502,11 @@ const handleBackToOptions = () => {
         }
         
         .launch-btn.cloud {
-        margin: auto;
+          margin: auto;
         }
 
         .launch-btn.local {
-        margin: auto;
+          margin: auto;
         }
         
         .launch-btn.btn-hovered {

@@ -11,6 +11,8 @@ from app.store.scenario_crud import create_scenario
 from app.classes.scenario_schemas import ScenarioCreate
 import uuid
 import json
+import logging
+
 router = APIRouter(prefix="/mqtt", tags=["mqtt"])
 
 @router.post("/extract")
@@ -135,35 +137,36 @@ def inject_mqtt_to_specified_swagger(filename: str = Query(..., description="Nam
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-
 @router.get("/check-mqtt")
 def check_mqtt_injection(filename: str = Query(..., description="Name of the Swagger JSON file to check")):
+    import logging
+    logging.basicConfig(level=logging.INFO)
     try:
-        # Path to Swagger files directory
+        logging.info(f"Checking MQTT injection for file: {filename}")
         swagger_dir = Path(__file__).resolve().parents[3] / "UI" / "dev-helpers"
         swagger_file = swagger_dir / filename
+        logging.info(f"Swagger file path: {swagger_file}")
 
         if not swagger_file.exists():
+            logging.error(f"File not found: {swagger_file}")
             raise HTTPException(status_code=404, detail=f"Swagger file '{filename}' not found.")
 
-        # Load Swagger JSON
         with swagger_file.open("r", encoding="utf-8") as f:
             swagger_json = json.load(f)
 
         paths = swagger_json.get("paths", {})
+        logging.info(f"Swagger paths: {list(paths.keys())}")
 
         mqtt_path = "/run-mqtt-test/{VU_COUNT}/{duration}/{broker}/{port}/{topic}/{password}"
-
+        injected = False
         if mqtt_path in paths:
-            return {"injected": True, }
-        else:
-            return {"injected": False}
-
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=400, detail=f"Invalid JSON format in '{filename}'")
+            methods = list(paths[mqtt_path].keys())
+            logging.info(f"Methods for MQTT path: {methods}")
+            if "mqtt" in methods or "post" in methods or "get" in methods:
+                injected = True
+        logging.info(f"MQTT injected: {injected}")
+        return {"injected": injected}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    
-
-    
-
+        logging.error(f"Exception: {e}")
+        # Return the error in the response for debugging
+        raise HTTPException(status_code=500, detail=f"Internal error: {e}")

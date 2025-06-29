@@ -84981,7 +84981,7 @@
       }
     },
     "/run-mqtt-test/{VU_COUNT}/{duration}/{broker}/{port}/{topic}/{password}": {
-      "post": {
+      "mqtt": {
         "tags": [
           "mqtt-controller"
         ],
