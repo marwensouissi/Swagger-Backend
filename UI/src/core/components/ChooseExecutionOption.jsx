@@ -16,71 +16,64 @@ const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
   const [keyInput, setKeyInput] = useState('');
   const [extractedValues, setExtractedValues] = useState([]);
 
+  const [showPopup, setShowPopup] = useState(false);
+const [copied, setCopied] = useState(false);
+
+
   // Auto-scroll logs
   useEffect(() => {
     if (logContainerRef.current) {
       logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
     }
   }, [logs]);
-
-  
-  const handleExtractValues = () => {
-  if (!keyInput) {
-    alert('Please enter a key to search.');
-    return;
-  }
-
-  try {
-    const matches = [];
-    const lines = logs.split('\n');
-
-    lines.forEach(line => {
-      // Look for the specific pattern in your logs
-      if (line.includes('🧪 idedd response:')) {
-        const responseIndex = line.indexOf('🧪 idedd response:');
-        const jsonPart = line.slice(responseIndex + '🧪 idedd response:'.length).trim();
-        
-        // Find all occurrences of the key
-        let keyPos = jsonPart.indexOf(`"${keyInput}"`);
-        while (keyPos !== -1) {
-          // Find the value after the key
-          const valueStart = jsonPart.indexOf(':', keyPos) + 1;
-          if (valueStart > 0) {
-            let valueEnd = jsonPart.indexOf(',', valueStart);
-            if (valueEnd === -1) valueEnd = jsonPart.indexOf('}', valueStart);
-            if (valueEnd === -1) valueEnd = jsonPart.length;
-            
-            let value = jsonPart.slice(valueStart, valueEnd).trim();
-            
-            // Clean up the value
-            if (value.startsWith('"') && value.endsWith('"')) {
-              value = value.slice(1, -1);
-            }
-            
-            if (value) {
-              matches.push(value);
-            }
-          }
-          keyPos = jsonPart.indexOf(`"${keyInput}"`, keyPos + 1);
-        }
-      }
-    });
-
-    setExtractedValues(matches);
-
-    if (matches.length === 0) {
-      console.log('No matches found in logs:', logs);
-      alert(`No values found for "${keyInput}" in the response lines.`);
-    } else {
-      console.log(`Found values for "${keyInput}":`, matches);
-      alert(`Found values for "${keyInput}":\n${matches.join('\n')}`);
+  const handleExtractValues = async () => {
+    if (!keyInput) {
+      alert('Please enter a key to search.');
+      return;
     }
-  } catch (error) {
-    console.error('Extraction error:', error);
-    alert('Error extracting values. Check console for details.');
-  }
+  
+    try {
+      const response = await fetch(`http://localhost:6060/mqtt/extract?key=${encodeURIComponent(keyInput)}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain',
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`,
+        },
+        body: logs,
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+  
+      const result = await response.json();
+      const values = result[keyInput] || [];
+  
+      setExtractedValues(values);
+      setShowPopup(true);
+    } catch (error) {
+      console.error('Extraction error:', error);
+      alert('Error extracting values. Check console for details.');
+    }
+  };
+  
+//copy payload 
+const handleCopyAll = () => {
+  if (!extractedValues || extractedValues.length === 0) return;
+
+  const formatted = extractedValues
+    .map((key, idx) => `"${key}"${idx === extractedValues.length - 1 ? '' : ','}`)
+    .join('\n');
+
+  navigator.clipboard.writeText(formatted).then(() => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  });
 };
 
+
+  
+  
   // Rest of your component code remains the same...
   const openDashboard = () => {
     if (dashboardPort) {
@@ -368,8 +361,74 @@ const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
                     {value}
                   </pre>
                 ))}
+
+
               </div>
             )}
+            {showPopup && (
+  <motion.div
+    initial={{ scale: 0.9, opacity: 0 }}
+    animate={{ scale: 1, opacity: 1 }}
+    exit={{ scale: 0.9, opacity: 0 }}
+    transition={{ duration: 0.2 }}
+    style={{
+      background: '#1a1a1a',
+      border: '1px solid #444',
+      borderRadius: '8px',
+      padding: '1.5rem',
+      marginTop: '1.5rem',
+      boxShadow: '0 0 20px rgba(0,0,0,0.3)',
+      color: '#f0f0f0'
+    }}
+  >
+    <h4 style={{ marginBottom: '1rem', color: '#84BD00' }}>
+      Extracted values for "<span style={{ color: '#FFD700' }}>{keyInput}</span>"
+    </h4>
+
+    <pre style={{
+      background: '#111',
+      padding: '1rem',
+      borderRadius: '6px',
+      maxHeight: '200px',
+      overflowY: 'auto',
+      whiteSpace: 'pre-wrap',
+      fontSize: '0.9rem'
+    }}>
+      {extractedValues.join('\n')}
+    </pre>
+
+    <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem' }}>
+      <button
+        onClick={handleCopyAll}
+        style={{
+          background: '#4CAF50',
+          color: 'white',
+          border: 'none',
+          padding: '0.5rem 1rem',
+          borderRadius: '6px',
+          cursor: 'pointer',
+        }}
+      >
+        {copied ? 'Copied!' : 'Copy All'}
+      </button>
+
+      <button
+        onClick={() => setShowPopup(false)}
+        style={{
+          background: '#e53e3e',
+          color: 'white',
+          border: 'none',
+          padding: '0.5rem 1rem',
+          borderRadius: '6px',
+          cursor: 'pointer',
+        }}
+      >
+        Close
+      </button>
+    </div>
+  </motion.div>
+)}
+
 
             <div className="modal-actions">
               {testCompleted ? (
@@ -424,16 +483,16 @@ const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
         }
         
         .modal-content {
-          background: linear-gradient(145deg, #2d3748, #1a202c);
-          border-radius: 12px;
-          padding: 2rem;
-          width: 85%;
-          max-height: 90vh;
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-          color: white;
-          border: 1px solid #4a5568;
-          overflow: hidden;
-        }
+  background: linear-gradient(145deg, #2d3748, #1a202c);
+  border-radius: 12px;
+  padding: 2rem;
+  width: 85%;
+  max-height: 90vh;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  color: white;
+  border: 1px solid #4a5568;
+  overflow-y: auto; /* Enable vertical scroll */
+}
         
         .test-header {
           display: flex;

@@ -22,65 +22,74 @@ const ListSelectedApis = ({ swaggerFilename }) => {
     setShowLaunchModal(true);
   };
 
-const handleMQTTExecution = async () => {
-  if (!mqttApis.length) {
-    alert("No MQTT API selected.");
-    return;
-  }
-  const { functionName, params, bodyValue } = mqttApis[0];
-
-  // Remove all '-path' suffixes from params keys
-  const cleanedParams = {};
-  Object.entries(params).forEach(([key, value]) => {
-    if (key.endsWith('-path')) {
-      cleanedParams[key.replace('-path', '')] = value;
-    } else {
-      cleanedParams[key] = value;
+  const handleMQTTExecution = async () => {
+    if (!mqttApis.length) {
+      alert("No MQTT API selected.");
+      return;
     }
-  });
-
-  // Get VU_COUNT as a number
-  const vuCount = parseInt(cleanedParams.VU_COUNT, 10) || 1;
-
-  // Generate credentials as many as VU_COUNT
-  const key_values = Array.from({ length: vuCount }, (_, i) => `credential_${i + 1}`);
-
-  // Build the payload
-  const payload = {
-    key: "credentialsId",
-    key_values,
-    parameters: [
-      {
-        function: functionName,
-        method: "MQTT",
-        save_as: functionName,
-        ...cleanedParams,
-        ...(bodyValue ? { body: bodyValue } : {}),
+  
+    const { functionName, params, bodyValue } = mqttApis[0];
+  
+    // Remove all '-path' suffixes from params keys
+    const cleanedParams = {};
+    Object.entries(params).forEach(([key, value]) => {
+      if (key.endsWith('-path')) {
+        cleanedParams[key.replace('-path', '')] = value;
+      } else {
+        cleanedParams[key] = value;
       }
-    ]
-  };
-
-  try {
-      const token = sessionStorage.getItem('authToken');
-    const response = await fetch('http://localhost:6060/mqtt/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json',
-         'Authorization': `Bearer ${token}`,
-       },
-      body: JSON.stringify(payload),
-
     });
-    console.log("MQTT payload:", payload);
-
-    const result = await response.json();
-    setGeneratedFilename(result.filename);
-    setModalOpen(false);
-    setShowMQTTExecutionOptions(true); // Show MQTT execution options
-  } catch (error) {
-    console.error('Error generating MQTT test:', error);
-  }
-};
-
+  
+    // Validate credentials in bodyValue
+    let parsedCredentials = [];
+    try {
+      const parsedBody = JSON.parse(bodyValue || '{}');
+      if (Array.isArray(parsedBody.credentials)) {
+        parsedCredentials = parsedBody.credentials;
+      } else {
+        alert("Invalid credentials format. Expected: { credentials: [ ... ] }");
+        return;
+      }
+    } catch (err) {
+      alert("Failed to parse credentials from body. Make sure it's a valid JSON.");
+      return;
+    }
+  
+    // Build the payload with actual user-provided credentials
+    const payload = {
+      credentials: parsedCredentials,
+      parameters: [
+        {
+          function: functionName,
+          method: "MQTT",
+          save_as: functionName,
+          ...cleanedParams,
+        }
+      ]
+    };
+  
+    try {
+      const token = sessionStorage.getItem('authToken');
+      const response = await fetch('http://localhost:6060/mqtt/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      console.log("MQTT payload:", payload);
+  
+      const result = await response.json();
+      setGeneratedFilename(result.filename);
+      setModalOpen(false);
+      setShowMQTTExecutionOptions(true); // Show MQTT execution options
+    } catch (error) {
+      console.error('Error generating MQTT test:', error);
+    }
+  };
+  
 
 const apiData = useSelector((state) => {
     const requestData = state.getIn(['oas3', 'requestData']);
@@ -115,29 +124,33 @@ const apiData = useSelector((state) => {
 const handleLaunchTest = async (stages) => {
   // Filter only HTTP APIs
   const httpTestCases = apiData
-    .filter(({ method, functionName }) => HTTP_METHODS.includes(method) && !!functionName)
-    .map(({ api, method, bodyValue, functionName, params }) => {
-      let url = api.replace(/\{\?.*?\}/, ''); // Remove query params
-      let baseUrl = url.split('/').slice(0, 2).join('/');
-      if (!baseUrl.startsWith('/')) baseUrl = '/' + baseUrl;
+  .filter(({ method, functionName }) => HTTP_METHODS.includes(method) && !!functionName)
+  .map(({ api, method, bodyValue, functionName, params }) => {
+    let url = api.replace(/\{\?.*?\}/, ''); // remove optional query template
+    const queryParams = [];
 
-      const paramFields = {};
-      if (params) {
-        Object.entries(params).forEach(([key, value]) => {
-          if (key.endsWith('-path')) {
-            const paramName = key.replace('-path', '');
-            paramFields[paramName] = value;
-          }
-        });
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (key.endsWith('-path')) {
+          const paramName = key.replace('-path', '');
+          url = url.replace(`{${paramName}}`, value);
+        } else if (key.endsWith('-query')) {
+          const paramName = key.replace('-query', '');
+          queryParams.push(`${encodeURIComponent(paramName)}=${encodeURIComponent(value)}`);
+        }
+      });
+
+      if (queryParams.length > 0) {
+        url += `?${queryParams.join('&')}`;
       }
+    }
 
-      const testCase = {
-        function: functionName,
-        method,
-        url,
-        save_as: functionName,
-        ...paramFields,
-      };
+    const testCase = {
+      function: functionName,
+      method,
+      url,
+      save_as: functionName,
+    };
 
       if (['POST', 'PUT', 'PATCH'].includes(method.toUpperCase()) && bodyValue) {
         try {

@@ -1281,7 +1281,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abRepositorySettings\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«RepositorySettings»"
                 }
               }
             }
@@ -1415,7 +1415,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abVoid\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«Void»"
                 }
               }
             }
@@ -1560,7 +1560,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abVoid\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«Void»"
                 }
               }
             }
@@ -6213,7 +6213,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAlarmCommentInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«AlarmCommentInfo»"
                 }
               }
             }
@@ -7909,7 +7909,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAlarmInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«AlarmInfo»"
                 }
               }
             }
@@ -8188,7 +8188,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAlarmInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«AlarmInfo»"
                 }
               }
             }
@@ -8477,7 +8477,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAlarmInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«AlarmInfo»"
                 }
               }
             }
@@ -8746,7 +8746,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAlarmInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«AlarmInfo»"
                 }
               }
             }
@@ -9036,7 +9036,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BulkImportResult\u00abAsset\u00bb"
+                  "$ref": "#/components/schemas/BulkImportResult«Asset»"
                 }
               }
             }
@@ -9835,7 +9835,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAssetInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«AssetInfo»"
                 }
               }
             }
@@ -10823,7 +10823,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAssetInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«AssetInfo»"
                 }
               }
             }
@@ -11046,7 +11046,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAsset\u00bb"
+                  "$ref": "#/components/schemas/PageData«Asset»"
                 }
               }
             }
@@ -11605,7 +11605,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAsset\u00bb"
+                  "$ref": "#/components/schemas/PageData«Asset»"
                 }
               }
             }
@@ -11828,7 +11828,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAssetInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«AssetInfo»"
                 }
               }
             }
@@ -12190,7 +12190,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAsset\u00bb"
+                  "$ref": "#/components/schemas/PageData«Asset»"
                 }
               }
             }
@@ -13256,7 +13256,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAssetProfileInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«AssetProfileInfo»"
                 }
               }
             }
@@ -13458,7 +13458,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAssetProfile\u00bb"
+                  "$ref": "#/components/schemas/PageData«AssetProfile»"
                 }
               }
             }
@@ -13704,7 +13704,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAuditLog\u00bb"
+                  "$ref": "#/components/schemas/PageData«AuditLog»"
                 }
               }
             }
@@ -13960,7 +13960,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAuditLog\u00bb"
+                  "$ref": "#/components/schemas/PageData«AuditLog»"
                 }
               }
             }
@@ -14206,7 +14206,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAuditLog\u00bb"
+                  "$ref": "#/components/schemas/PageData«AuditLog»"
                 }
               }
             }
@@ -14442,7 +14442,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAuditLog\u00bb"
+                  "$ref": "#/components/schemas/PageData«AuditLog»"
                 }
               }
             }
@@ -18075,7 +18075,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abCustomer\u00bb"
+                  "$ref": "#/components/schemas/PageData«Customer»"
                 }
               }
             }
@@ -19052,7 +19052,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDashboardInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«DashboardInfo»"
                 }
               }
             }
@@ -21403,7 +21403,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDashboardInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«DashboardInfo»"
                 }
               }
             }
@@ -21895,7 +21895,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDashboardInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«DashboardInfo»"
                 }
               }
             }
@@ -22105,7 +22105,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDashboardInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«DashboardInfo»"
                 }
               }
             }
@@ -22250,7 +22250,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -22407,7 +22407,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -22564,7 +22564,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -22723,7 +22723,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -22891,7 +22891,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -23048,7 +23048,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -23238,7 +23238,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -23395,7 +23395,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -23563,7 +23563,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -23722,7 +23722,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -23912,7 +23912,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -24069,7 +24069,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -25268,7 +25268,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -25634,7 +25634,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -25780,7 +25780,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -26319,7 +26319,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDeviceInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«DeviceInfo»"
                 }
               }
             }
@@ -26543,7 +26543,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDevice\u00bb"
+                  "$ref": "#/components/schemas/PageData«Device»"
                 }
               }
             }
@@ -26766,7 +26766,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDevice\u00bb"
+                  "$ref": "#/components/schemas/PageData«Device»"
                 }
               }
             }
@@ -27056,7 +27056,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -27201,7 +27201,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BulkImportResult\u00abDevice\u00bb"
+                  "$ref": "#/components/schemas/BulkImportResult«Device»"
                 }
               }
             }
@@ -29702,7 +29702,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDevice\u00bb"
+                  "$ref": "#/components/schemas/PageData«Device»"
                 }
               }
             }
@@ -30087,7 +30087,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDeviceInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«DeviceInfo»"
                 }
               }
             }
@@ -30301,7 +30301,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDeviceInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«DeviceInfo»"
                 }
               }
             }
@@ -30524,7 +30524,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDeviceInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«DeviceInfo»"
                 }
               }
             }
@@ -30886,7 +30886,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDevice\u00bb"
+                  "$ref": "#/components/schemas/PageData«Device»"
                 }
               }
             }
@@ -32579,7 +32579,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDeviceProfileInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«DeviceProfileInfo»"
                 }
               }
             }
@@ -32935,7 +32935,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abDeviceProfile\u00bb"
+                  "$ref": "#/components/schemas/PageData«DeviceProfile»"
                 }
               }
             }
@@ -34865,7 +34865,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEdgeInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«EdgeInfo»"
                 }
               }
             }
@@ -35088,7 +35088,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEdge\u00bb"
+                  "$ref": "#/components/schemas/PageData«Edge»"
                 }
               }
             }
@@ -35378,7 +35378,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BulkImportResult\u00abEdge\u00bb"
+                  "$ref": "#/components/schemas/BulkImportResult«Edge»"
                 }
               }
             }
@@ -35822,7 +35822,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -37046,7 +37046,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEdge\u00bb"
+                  "$ref": "#/components/schemas/PageData«Edge»"
                 }
               }
             }
@@ -37259,7 +37259,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEdgeInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«EdgeInfo»"
                 }
               }
             }
@@ -37621,7 +37621,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEdge\u00bb"
+                  "$ref": "#/components/schemas/PageData«Edge»"
                 }
               }
             }
@@ -37854,7 +37854,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEdgeEvent\u00bb"
+                  "$ref": "#/components/schemas/PageData«EdgeEvent»"
                 }
               }
             }
@@ -37990,7 +37990,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abList\u00abBranchInfo\u00bb\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«List«BranchInfo»»"
                 }
               }
             }
@@ -38202,7 +38202,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abEntityDataDiff\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«EntityDataDiff»"
                 }
               }
             }
@@ -38548,7 +38548,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abList\u00abVersionedEntityInfo\u00bb\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«List«VersionedEntityInfo»»"
                 }
               }
             }
@@ -38845,7 +38845,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abList\u00abVersionedEntityInfo\u00bb\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«List«VersionedEntityInfo»»"
                 }
               }
             }
@@ -39056,7 +39056,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abEntityDataInfo\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«EntityDataInfo»"
                 }
               }
             }
@@ -39201,7 +39201,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abuuid\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«uuid»"
                 }
               }
             }
@@ -39474,7 +39474,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abPageData\u00abEntityVersion\u00bb\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«PageData«EntityVersion»»"
                 }
               }
             }
@@ -39736,7 +39736,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abPageData\u00abEntityVersion\u00bb\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«PageData«EntityVersion»»"
                 }
               }
             }
@@ -40095,7 +40095,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abPageData\u00abEntityVersion\u00bb\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«PageData«EntityVersion»»"
                 }
               }
             }
@@ -40240,7 +40240,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abAlarmData\u00bb"
+                  "$ref": "#/components/schemas/PageData«AlarmData»"
                 }
               }
             }
@@ -40531,7 +40531,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEntityData\u00bb"
+                  "$ref": "#/components/schemas/PageData«EntityData»"
                 }
               }
             }
@@ -40698,7 +40698,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -44095,7 +44095,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEntityViewInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«EntityViewInfo»"
                 }
               }
             }
@@ -44316,7 +44316,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEntityView\u00bb"
+                  "$ref": "#/components/schemas/PageData«EntityView»"
                 }
               }
             }
@@ -44861,7 +44861,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEntityView\u00bb"
+                  "$ref": "#/components/schemas/PageData«EntityView»"
                 }
               }
             }
@@ -45940,7 +45940,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEntityViewInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«EntityViewInfo»"
                 }
               }
             }
@@ -46300,7 +46300,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEntityView\u00bb"
+                  "$ref": "#/components/schemas/PageData«EntityView»"
                 }
               }
             }
@@ -46808,7 +46808,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEntityView\u00bb"
+                  "$ref": "#/components/schemas/PageData«EntityView»"
                 }
               }
             }
@@ -47250,7 +47250,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEventInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«EventInfo»"
                 }
               }
             }
@@ -47500,7 +47500,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEventInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«EventInfo»"
                 }
               }
             }
@@ -47757,7 +47757,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEventInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«EventInfo»"
                 }
               }
             }
@@ -48672,7 +48672,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abInvoice\u00bb"
+                  "$ref": "#/components/schemas/PageData«Invoice»"
                 }
               }
             }
@@ -50016,7 +50016,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abNotificationRequestInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«NotificationRequestInfo»"
                 }
               }
             }
@@ -50891,7 +50891,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abNotification\u00bb"
+                  "$ref": "#/components/schemas/PageData«Notification»"
                 }
               }
             }
@@ -51515,7 +51515,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abNotificationRuleInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«NotificationRuleInfo»"
                 }
               }
             }
@@ -51829,7 +51829,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abUser\u00bb"
+                  "$ref": "#/components/schemas/PageData«User»"
                 }
               }
             }
@@ -52486,7 +52486,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abNotificationTarget\u00bb"
+                  "$ref": "#/components/schemas/PageData«NotificationTarget»"
                 }
               }
             }
@@ -52676,7 +52676,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abNotificationTarget\u00bb"
+                  "$ref": "#/components/schemas/PageData«NotificationTarget»"
                 }
               }
             }
@@ -53490,7 +53490,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abNotificationTemplate\u00bb"
+                  "$ref": "#/components/schemas/PageData«NotificationTemplate»"
                 }
               }
             }
@@ -55629,7 +55629,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abOtaPackageInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«OtaPackageInfo»"
                 }
               }
             }
@@ -55834,7 +55834,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abOtaPackageInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«OtaPackageInfo»"
                 }
               }
             }
@@ -57675,7 +57675,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abQueue\u00bb"
+                  "$ref": "#/components/schemas/PageData«Queue»"
                 }
               }
             }
@@ -58752,7 +58752,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abRole\u00bb"
+                  "$ref": "#/components/schemas/PageData«Role»"
                 }
               }
             }
@@ -59071,7 +59071,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -59238,7 +59238,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -59395,7 +59395,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -59627,7 +59627,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -60071,7 +60071,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -60599,7 +60599,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abRuleChain\u00bb"
+                  "$ref": "#/components/schemas/PageData«RuleChain»"
                 }
               }
             }
@@ -63335,7 +63335,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abRuleChain\u00bb"
+                  "$ref": "#/components/schemas/PageData«RuleChain»"
                 }
               }
             }
@@ -64284,7 +64284,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abSchedulerEventInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«SchedulerEventInfo»"
                 }
               }
             }
@@ -65079,7 +65079,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abSchedulerEvent\u00bb"
+                  "$ref": "#/components/schemas/PageData«SchedulerEvent»"
                 }
               }
             }
@@ -65278,7 +65278,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abSchedulerEvent\u00bb"
+                  "$ref": "#/components/schemas/PageData«SchedulerEvent»"
                 }
               }
             }
@@ -67103,7 +67103,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abStorage\u00bb"
+                  "$ref": "#/components/schemas/PageData«Storage»"
                 }
               }
             }
@@ -69232,7 +69232,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abTbResourceInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«TbResourceInfo»"
                 }
               }
             }
@@ -69389,7 +69389,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -69560,7 +69560,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -69736,7 +69736,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -69920,7 +69920,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -70081,7 +70081,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -70254,7 +70254,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -70412,7 +70412,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -70622,7 +70622,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -70801,7 +70801,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -70992,7 +70992,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -71175,7 +71175,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -71361,7 +71361,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -71529,7 +71529,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -71786,7 +71786,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -71964,7 +71964,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -72145,7 +72145,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -72331,7 +72331,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeferredResult\u00abResponseEntity\u00bb"
+                  "$ref": "#/components/schemas/DeferredResult«ResponseEntity»"
                 }
               }
             }
@@ -73123,7 +73123,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abTenantInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«TenantInfo»"
                 }
               }
             }
@@ -73331,7 +73331,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abTenant\u00bb"
+                  "$ref": "#/components/schemas/PageData«Tenant»"
                 }
               }
             }
@@ -73817,7 +73817,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abTenantProfile\u00bb"
+                  "$ref": "#/components/schemas/PageData«TenantProfile»"
                 }
               }
             }
@@ -74881,7 +74881,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abEntityInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«EntityInfo»"
                 }
               }
             }
@@ -75083,7 +75083,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abTenantProfile\u00bb"
+                  "$ref": "#/components/schemas/PageData«TenantProfile»"
                 }
               }
             }
@@ -77393,7 +77393,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abUser\u00bb"
+                  "$ref": "#/components/schemas/PageData«User»"
                 }
               }
             }
@@ -77756,7 +77756,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abUser\u00bb"
+                  "$ref": "#/components/schemas/PageData«User»"
                 }
               }
             }
@@ -79861,7 +79861,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abUserEmailInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«UserEmailInfo»"
                 }
               }
             }
@@ -80061,7 +80061,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abUserEmailInfo\u00bb"
+                  "$ref": "#/components/schemas/PageData«UserEmailInfo»"
                 }
               }
             }
@@ -80263,7 +80263,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abUser\u00bb"
+                  "$ref": "#/components/schemas/PageData«User»"
                 }
               }
             }
@@ -82770,7 +82770,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abVidAnalyticChain\u00bb"
+                  "$ref": "#/components/schemas/PageData«VidAnalyticChain»"
                 }
               }
             }
@@ -84634,7 +84634,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageData\u00abWidgetsBundle\u00bb"
+                  "$ref": "#/components/schemas/PageData«WidgetsBundle»"
                 }
               }
             }
@@ -84754,102 +84754,6 @@
             ]
           }
         ]
-      }
-    },
-    "/run-mqtt-test/{VU_COUNT}/{duration}/{broker}/{port}/{topic}/{password}": {
-      "mqtt": {
-        "tags": [
-          "mqtt-controller"
-        ],
-        "summary": "Run MQTT Load Test via Path Params and Credentials List",
-        "description": "Runs MQTT load test using parameters passed in the URL path and a list of credentials in the request body.",
-        "operationId": "runMqttTestWithParamsAndCredentials",
-        "parameters": [
-          {
-            "name": "VU_COUNT",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Number of Virtual Users for K6 test"
-          },
-          {
-            "name": "duration",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Duration of the load test"
-          },
-          {
-            "name": "broker",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "MQTT broker address"
-          },
-          {
-            "name": "port",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "MQTT broker port"
-          },
-          {
-            "name": "topic",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "MQTT topic to publish to"
-          },
-          {
-            "name": "password",
-            "in": "path",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "MQTT password (can be empty)"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "credentials": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "description": "List of MQTT credentials"
-                  }
-                },
-                "required": [
-                  "credentials"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Test started successfully"
-          },
-          "400": {
-            "description": "Invalid input"
-          }
-        }
       }
     }
   },
@@ -86029,7 +85933,7 @@
             ]
           },
           "value": {
-            "$ref": "#/components/schemas/FilterPredicateValue\u00abboolean\u00bb"
+            "$ref": "#/components/schemas/FilterPredicateValue«boolean»"
           }
         },
         "allOf": [
@@ -86048,7 +85952,7 @@
                 ]
               },
               "value": {
-                "$ref": "#/components/schemas/FilterPredicateValue\u00abboolean\u00bb"
+                "$ref": "#/components/schemas/FilterPredicateValue«boolean»"
               }
             }
           }
@@ -86074,18 +85978,18 @@
         "type": "object",
         "properties": {}
       },
-      "BulkImportResult\u00abAsset\u00bb": {
-        "title": "BulkImportResult\u00abAsset\u00bb",
+      "BulkImportResult«Asset»": {
+        "title": "BulkImportResult«Asset»",
         "type": "object",
         "properties": {}
       },
-      "BulkImportResult\u00abDevice\u00bb": {
-        "title": "BulkImportResult\u00abDevice\u00bb",
+      "BulkImportResult«Device»": {
+        "title": "BulkImportResult«Device»",
         "type": "object",
         "properties": {}
       },
-      "BulkImportResult\u00abEdge\u00bb": {
-        "title": "BulkImportResult\u00abEdge\u00bb",
+      "BulkImportResult«Edge»": {
+        "title": "BulkImportResult«Edge»",
         "type": "object",
         "properties": {}
       },
@@ -86489,7 +86393,7 @@
         "title": "CustomTimeSchedule",
         "properties": {
           "dynamicValue": {
-            "$ref": "#/components/schemas/DynamicValue\u00abstring\u00bb"
+            "$ref": "#/components/schemas/DynamicValue«string»"
           },
           "items": {
             "type": "array",
@@ -86518,7 +86422,7 @@
             "type": "object",
             "properties": {
               "dynamicValue": {
-                "$ref": "#/components/schemas/DynamicValue\u00abstring\u00bb"
+                "$ref": "#/components/schemas/DynamicValue«string»"
               },
               "items": {
                 "type": "array",
@@ -86735,48 +86639,48 @@
         "type": "object",
         "properties": {}
       },
-      "DeferredResult\u00abEntityDataDiff\u00bb": {
-        "title": "DeferredResult\u00abEntityDataDiff\u00bb",
+      "DeferredResult«EntityDataDiff»": {
+        "title": "DeferredResult«EntityDataDiff»",
         "type": "object",
         "properties": {}
       },
-      "DeferredResult\u00abEntityDataInfo\u00bb": {
-        "title": "DeferredResult\u00abEntityDataInfo\u00bb",
+      "DeferredResult«EntityDataInfo»": {
+        "title": "DeferredResult«EntityDataInfo»",
         "type": "object",
         "properties": {}
       },
-      "DeferredResult\u00abList\u00abBranchInfo\u00bb\u00bb": {
-        "title": "DeferredResult\u00abList\u00abBranchInfo\u00bb\u00bb",
+      "DeferredResult«List«BranchInfo»»": {
+        "title": "DeferredResult«List«BranchInfo»»",
         "type": "object",
         "properties": {}
       },
-      "DeferredResult\u00abList\u00abVersionedEntityInfo\u00bb\u00bb": {
-        "title": "DeferredResult\u00abList\u00abVersionedEntityInfo\u00bb\u00bb",
+      "DeferredResult«List«VersionedEntityInfo»»": {
+        "title": "DeferredResult«List«VersionedEntityInfo»»",
         "type": "object",
         "properties": {}
       },
-      "DeferredResult\u00abPageData\u00abEntityVersion\u00bb\u00bb": {
-        "title": "DeferredResult\u00abPageData\u00abEntityVersion\u00bb\u00bb",
+      "DeferredResult«PageData«EntityVersion»»": {
+        "title": "DeferredResult«PageData«EntityVersion»»",
         "type": "object",
         "properties": {}
       },
-      "DeferredResult\u00abRepositorySettings\u00bb": {
-        "title": "DeferredResult\u00abRepositorySettings\u00bb",
+      "DeferredResult«RepositorySettings»": {
+        "title": "DeferredResult«RepositorySettings»",
         "type": "object",
         "properties": {}
       },
-      "DeferredResult\u00abResponseEntity\u00bb": {
-        "title": "DeferredResult\u00abResponseEntity\u00bb",
+      "DeferredResult«ResponseEntity»": {
+        "title": "DeferredResult«ResponseEntity»",
         "type": "object",
         "properties": {}
       },
-      "DeferredResult\u00abVoid\u00bb": {
-        "title": "DeferredResult\u00abVoid\u00bb",
+      "DeferredResult«Void»": {
+        "title": "DeferredResult«Void»",
         "type": "object",
         "properties": {}
       },
-      "DeferredResult\u00abuuid\u00bb": {
-        "title": "DeferredResult\u00abuuid\u00bb",
+      "DeferredResult«uuid»": {
+        "title": "DeferredResult«uuid»",
         "type": "object",
         "properties": {}
       },
@@ -86944,7 +86848,7 @@
         },
         "allOf": [
           {
-            "$ref": "#/components/schemas/EntityExportData\u00abobject\u00bb"
+            "$ref": "#/components/schemas/EntityExportData«object»"
           },
           {
             "title": "DeviceExportData",
@@ -87383,28 +87287,28 @@
         "type": "object",
         "properties": {}
       },
-      "DynamicValue\u00abboolean\u00bb": {
-        "title": "DynamicValue\u00abboolean\u00bb",
+      "DynamicValue«boolean»": {
+        "title": "DynamicValue«boolean»",
         "type": "object",
         "properties": {}
       },
-      "DynamicValue\u00abdouble\u00bb": {
-        "title": "DynamicValue\u00abdouble\u00bb",
+      "DynamicValue«double»": {
+        "title": "DynamicValue«double»",
         "type": "object",
         "properties": {}
       },
-      "DynamicValue\u00abint\u00bb": {
-        "title": "DynamicValue\u00abint\u00bb",
+      "DynamicValue«int»": {
+        "title": "DynamicValue«int»",
         "type": "object",
         "properties": {}
       },
-      "DynamicValue\u00ablong\u00bb": {
-        "title": "DynamicValue\u00ablong\u00bb",
+      "DynamicValue«long»": {
+        "title": "DynamicValue«long»",
         "type": "object",
         "properties": {}
       },
-      "DynamicValue\u00abstring\u00bb": {
-        "title": "DynamicValue\u00abstring\u00bb",
+      "DynamicValue«string»": {
+        "title": "DynamicValue«string»",
         "type": "object",
         "properties": {}
       },
@@ -87920,8 +87824,8 @@
         "type": "object",
         "properties": {}
       },
-      "EntityExportData\u00abobject\u00bb": {
-        "title": "EntityExportData\u00abobject\u00bb",
+      "EntityExportData«object»": {
+        "title": "EntityExportData«object»",
         "type": "object",
         "properties": {}
       },
@@ -88871,28 +88775,28 @@
         "type": "object",
         "properties": {}
       },
-      "FilterPredicateValue\u00abboolean\u00bb": {
-        "title": "FilterPredicateValue\u00abboolean\u00bb",
+      "FilterPredicateValue«boolean»": {
+        "title": "FilterPredicateValue«boolean»",
         "type": "object",
         "properties": {}
       },
-      "FilterPredicateValue\u00abdouble\u00bb": {
-        "title": "FilterPredicateValue\u00abdouble\u00bb",
+      "FilterPredicateValue«double»": {
+        "title": "FilterPredicateValue«double»",
         "type": "object",
         "properties": {}
       },
-      "FilterPredicateValue\u00abint\u00bb": {
-        "title": "FilterPredicateValue\u00abint\u00bb",
+      "FilterPredicateValue«int»": {
+        "title": "FilterPredicateValue«int»",
         "type": "object",
         "properties": {}
       },
-      "FilterPredicateValue\u00ablong\u00bb": {
-        "title": "FilterPredicateValue\u00ablong\u00bb",
+      "FilterPredicateValue«long»": {
+        "title": "FilterPredicateValue«long»",
         "type": "object",
         "properties": {}
       },
-      "FilterPredicateValue\u00abstring\u00bb": {
-        "title": "FilterPredicateValue\u00abstring\u00bb",
+      "FilterPredicateValue«string»": {
+        "title": "FilterPredicateValue«string»",
         "type": "object",
         "properties": {}
       },
@@ -89903,7 +89807,7 @@
             ]
           },
           "value": {
-            "$ref": "#/components/schemas/FilterPredicateValue\u00abdouble\u00bb"
+            "$ref": "#/components/schemas/FilterPredicateValue«double»"
           }
         },
         "allOf": [
@@ -89926,7 +89830,7 @@
                 ]
               },
               "value": {
-                "$ref": "#/components/schemas/FilterPredicateValue\u00abdouble\u00bb"
+                "$ref": "#/components/schemas/FilterPredicateValue«double»"
               }
             }
           }
@@ -90217,223 +90121,223 @@
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abAlarmCommentInfo\u00bb": {
-        "title": "PageData\u00abAlarmCommentInfo\u00bb",
+      "PageData«AlarmCommentInfo»": {
+        "title": "PageData«AlarmCommentInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abAlarmData\u00bb": {
-        "title": "PageData\u00abAlarmData\u00bb",
+      "PageData«AlarmData»": {
+        "title": "PageData«AlarmData»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abAlarmInfo\u00bb": {
-        "title": "PageData\u00abAlarmInfo\u00bb",
+      "PageData«AlarmInfo»": {
+        "title": "PageData«AlarmInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abAssetInfo\u00bb": {
-        "title": "PageData\u00abAssetInfo\u00bb",
+      "PageData«AssetInfo»": {
+        "title": "PageData«AssetInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abAssetProfileInfo\u00bb": {
-        "title": "PageData\u00abAssetProfileInfo\u00bb",
+      "PageData«AssetProfileInfo»": {
+        "title": "PageData«AssetProfileInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abAssetProfile\u00bb": {
-        "title": "PageData\u00abAssetProfile\u00bb",
+      "PageData«AssetProfile»": {
+        "title": "PageData«AssetProfile»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abAsset\u00bb": {
-        "title": "PageData\u00abAsset\u00bb",
+      "PageData«Asset»": {
+        "title": "PageData«Asset»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abAuditLog\u00bb": {
-        "title": "PageData\u00abAuditLog\u00bb",
+      "PageData«AuditLog»": {
+        "title": "PageData«AuditLog»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abCustomer\u00bb": {
-        "title": "PageData\u00abCustomer\u00bb",
+      "PageData«Customer»": {
+        "title": "PageData«Customer»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abDashboardInfo\u00bb": {
-        "title": "PageData\u00abDashboardInfo\u00bb",
+      "PageData«DashboardInfo»": {
+        "title": "PageData«DashboardInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abDeviceInfo\u00bb": {
-        "title": "PageData\u00abDeviceInfo\u00bb",
+      "PageData«DeviceInfo»": {
+        "title": "PageData«DeviceInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abDeviceProfileInfo\u00bb": {
-        "title": "PageData\u00abDeviceProfileInfo\u00bb",
+      "PageData«DeviceProfileInfo»": {
+        "title": "PageData«DeviceProfileInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abDeviceProfile\u00bb": {
-        "title": "PageData\u00abDeviceProfile\u00bb",
+      "PageData«DeviceProfile»": {
+        "title": "PageData«DeviceProfile»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abDevice\u00bb": {
-        "title": "PageData\u00abDevice\u00bb",
+      "PageData«Device»": {
+        "title": "PageData«Device»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abEdgeEvent\u00bb": {
-        "title": "PageData\u00abEdgeEvent\u00bb",
+      "PageData«EdgeEvent»": {
+        "title": "PageData«EdgeEvent»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abEdgeInfo\u00bb": {
-        "title": "PageData\u00abEdgeInfo\u00bb",
+      "PageData«EdgeInfo»": {
+        "title": "PageData«EdgeInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abEdge\u00bb": {
-        "title": "PageData\u00abEdge\u00bb",
+      "PageData«Edge»": {
+        "title": "PageData«Edge»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abEntityData\u00bb": {
-        "title": "PageData\u00abEntityData\u00bb",
+      "PageData«EntityData»": {
+        "title": "PageData«EntityData»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abEntityInfo\u00bb": {
-        "title": "PageData\u00abEntityInfo\u00bb",
+      "PageData«EntityInfo»": {
+        "title": "PageData«EntityInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abEntityVersion\u00bb": {
-        "title": "PageData\u00abEntityVersion\u00bb",
+      "PageData«EntityVersion»": {
+        "title": "PageData«EntityVersion»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abEntityViewInfo\u00bb": {
-        "title": "PageData\u00abEntityViewInfo\u00bb",
+      "PageData«EntityViewInfo»": {
+        "title": "PageData«EntityViewInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abEntityView\u00bb": {
-        "title": "PageData\u00abEntityView\u00bb",
+      "PageData«EntityView»": {
+        "title": "PageData«EntityView»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abEventInfo\u00bb": {
-        "title": "PageData\u00abEventInfo\u00bb",
+      "PageData«EventInfo»": {
+        "title": "PageData«EventInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abInvoice\u00bb": {
-        "title": "PageData\u00abInvoice\u00bb",
+      "PageData«Invoice»": {
+        "title": "PageData«Invoice»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abNotificationRequestInfo\u00bb": {
-        "title": "PageData\u00abNotificationRequestInfo\u00bb",
+      "PageData«NotificationRequestInfo»": {
+        "title": "PageData«NotificationRequestInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abNotificationRuleInfo\u00bb": {
-        "title": "PageData\u00abNotificationRuleInfo\u00bb",
+      "PageData«NotificationRuleInfo»": {
+        "title": "PageData«NotificationRuleInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abNotificationTarget\u00bb": {
-        "title": "PageData\u00abNotificationTarget\u00bb",
+      "PageData«NotificationTarget»": {
+        "title": "PageData«NotificationTarget»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abNotificationTemplate\u00bb": {
-        "title": "PageData\u00abNotificationTemplate\u00bb",
+      "PageData«NotificationTemplate»": {
+        "title": "PageData«NotificationTemplate»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abNotification\u00bb": {
-        "title": "PageData\u00abNotification\u00bb",
+      "PageData«Notification»": {
+        "title": "PageData«Notification»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abOtaPackageInfo\u00bb": {
-        "title": "PageData\u00abOtaPackageInfo\u00bb",
+      "PageData«OtaPackageInfo»": {
+        "title": "PageData«OtaPackageInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abQueue\u00bb": {
-        "title": "PageData\u00abQueue\u00bb",
+      "PageData«Queue»": {
+        "title": "PageData«Queue»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abRole\u00bb": {
-        "title": "PageData\u00abRole\u00bb",
+      "PageData«Role»": {
+        "title": "PageData«Role»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abRuleChain\u00bb": {
-        "title": "PageData\u00abRuleChain\u00bb",
+      "PageData«RuleChain»": {
+        "title": "PageData«RuleChain»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abSchedulerEventInfo\u00bb": {
-        "title": "PageData\u00abSchedulerEventInfo\u00bb",
+      "PageData«SchedulerEventInfo»": {
+        "title": "PageData«SchedulerEventInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abSchedulerEvent\u00bb": {
-        "title": "PageData\u00abSchedulerEvent\u00bb",
+      "PageData«SchedulerEvent»": {
+        "title": "PageData«SchedulerEvent»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abStorage\u00bb": {
-        "title": "PageData\u00abStorage\u00bb",
+      "PageData«Storage»": {
+        "title": "PageData«Storage»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abTbResourceInfo\u00bb": {
-        "title": "PageData\u00abTbResourceInfo\u00bb",
+      "PageData«TbResourceInfo»": {
+        "title": "PageData«TbResourceInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abTenantInfo\u00bb": {
-        "title": "PageData\u00abTenantInfo\u00bb",
+      "PageData«TenantInfo»": {
+        "title": "PageData«TenantInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abTenantProfile\u00bb": {
-        "title": "PageData\u00abTenantProfile\u00bb",
+      "PageData«TenantProfile»": {
+        "title": "PageData«TenantProfile»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abTenant\u00bb": {
-        "title": "PageData\u00abTenant\u00bb",
+      "PageData«Tenant»": {
+        "title": "PageData«Tenant»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abUserEmailInfo\u00bb": {
-        "title": "PageData\u00abUserEmailInfo\u00bb",
+      "PageData«UserEmailInfo»": {
+        "title": "PageData«UserEmailInfo»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abUser\u00bb": {
-        "title": "PageData\u00abUser\u00bb",
+      "PageData«User»": {
+        "title": "PageData«User»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abVidAnalyticChain\u00bb": {
-        "title": "PageData\u00abVidAnalyticChain\u00bb",
+      "PageData«VidAnalyticChain»": {
+        "title": "PageData«VidAnalyticChain»",
         "type": "object",
         "properties": {}
       },
-      "PageData\u00abWidgetsBundle\u00bb": {
-        "title": "PageData\u00abWidgetsBundle\u00bb",
+      "PageData«WidgetsBundle»": {
+        "title": "PageData«WidgetsBundle»",
         "type": "object",
         "properties": {}
       },
@@ -91201,7 +91105,7 @@
         },
         "allOf": [
           {
-            "$ref": "#/components/schemas/EntityExportData\u00abobject\u00bb"
+            "$ref": "#/components/schemas/EntityExportData«object»"
           },
           {
             "title": "RuleChainExportData",
@@ -92576,7 +92480,7 @@
             ]
           },
           "value": {
-            "$ref": "#/components/schemas/FilterPredicateValue\u00abstring\u00bb"
+            "$ref": "#/components/schemas/FilterPredicateValue«string»"
           }
         },
         "allOf": [
@@ -92604,7 +92508,7 @@
                 ]
               },
               "value": {
-                "$ref": "#/components/schemas/FilterPredicateValue\u00abstring\u00bb"
+                "$ref": "#/components/schemas/FilterPredicateValue«string»"
               }
             }
           }
@@ -93519,7 +93423,7 @@
         },
         "allOf": [
           {
-            "$ref": "#/components/schemas/EntityExportData\u00abobject\u00bb"
+            "$ref": "#/components/schemas/EntityExportData«object»"
           },
           {
             "title": "WidgetsBundleExportData",
@@ -93685,14 +93589,14 @@
           },
           "defaultMinPeriod": {
             "type": "integer",
-            "description": "The default value the LwM2M Client should use for the Minimum Period of an Observation in the absence of this parameter being included in an Observation. If this Resource doesn\u2019t exist, the default value is 0.",
+            "description": "The default value the LwM2M Client should use for the Minimum Period of an Observation in the absence of this parameter being included in an Observation. If this Resource doesn’t exist, the default value is 0.",
             "format": "int32",
             "readOnly": true,
             "example": 1
           },
           "notifIfDisabled": {
             "type": "boolean",
-            "description": "If true, the LwM2M Client stores \u201cNotify\u201d operations to the LwM2M Server while the LwM2M Server account is disabled or the LwM2M Client is offline. After the LwM2M Server account is enabled or the LwM2M Client is online, the LwM2M Client reports the stored \u201cNotify\u201d operations to the Server. If false, the LwM2M Client discards all the \u201cNotify\u201d operations or temporarily disables the Observe function while the LwM2M Server is disabled or the LwM2M Client is offline. The default value is true.",
+            "description": "If true, the LwM2M Client stores “Notify” operations to the LwM2M Server while the LwM2M Server account is disabled or the LwM2M Client is offline. After the LwM2M Server account is enabled or the LwM2M Client is online, the LwM2M Client reports the stored “Notify” operations to the Server. If false, the LwM2M Client discards all the “Notify” operations or temporarily disables the Observe function while the LwM2M Server is disabled or the LwM2M Client is offline. The default value is true.",
             "readOnly": true,
             "example": true
           },
@@ -93771,14 +93675,14 @@
               },
               "defaultMinPeriod": {
                 "type": "integer",
-                "description": "The default value the LwM2M Client should use for the Minimum Period of an Observation in the absence of this parameter being included in an Observation. If this Resource doesn\u2019t exist, the default value is 0.",
+                "description": "The default value the LwM2M Client should use for the Minimum Period of an Observation in the absence of this parameter being included in an Observation. If this Resource doesn’t exist, the default value is 0.",
                 "format": "int32",
                 "readOnly": true,
                 "example": 1
               },
               "notifIfDisabled": {
                 "type": "boolean",
-                "description": "If true, the LwM2M Client stores \u201cNotify\u201d operations to the LwM2M Server while the LwM2M Server account is disabled or the LwM2M Client is offline. After the LwM2M Server account is enabled or the LwM2M Client is online, the LwM2M Client reports the stored \u201cNotify\u201d operations to the Server. If false, the LwM2M Client discards all the \u201cNotify\u201d operations or temporarily disables the Observe function while the LwM2M Server is disabled or the LwM2M Client is offline. The default value is true.",
+                "description": "If true, the LwM2M Client stores “Notify” operations to the LwM2M Server while the LwM2M Server account is disabled or the LwM2M Client is offline. After the LwM2M Server account is enabled or the LwM2M Client is online, the LwM2M Client reports the stored “Notify” operations to the Server. If false, the LwM2M Client discards all the “Notify” operations or temporarily disables the Observe function while the LwM2M Server is disabled or the LwM2M Client is offline. The default value is true.",
                 "readOnly": true,
                 "example": true
               },

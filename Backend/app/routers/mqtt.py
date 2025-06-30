@@ -20,20 +20,20 @@ async def extract_key_from_raw_text(
     key: str = Query(..., description="The key to extract from the text"),
     raw_text: str = Body(..., media_type="text/plain")
 ):
-    # Regex to match both "key": "value" and 'key': 'value'
+    # 🧹 Clean the input by removing backslashes and forward slashes
+    cleaned_text = raw_text.replace("\\", "").replace("/", "")
+
+    # 🔍 Regex to find values for the given key
     pattern = rf'["\']{re.escape(key)}["\']\s*:\s*["\']([^"\']+)["\']'
-    matches = re.findall(pattern, raw_text)
+    matches = re.findall(pattern, cleaned_text)
 
     if not matches:
         raise HTTPException(status_code=404, detail=f"No values found for key '{key}'.")
 
-    return {
-        "key": key,
-        "key_values": matches
-    }
+    # 🧾 Return using the key name as the field
+    return {key: matches}
 class MQTTRequest(BaseModel):
-    key: str
-    key_values: List[str]
+    credentials: List[str]
     parameters: List[Dict]  # typically just one
 
 # -------------------------
@@ -55,8 +55,8 @@ def generate_mqtt_test(
 
         # Render with Jinja
         rendered = template.render(
-            credentials_key=request.key,
-            credentials_values=request.key_values,
+            credentials_key="credentialsId",
+            credentials_values=request.credentials,
             params=request.parameters[0]
         )
 
@@ -104,17 +104,35 @@ def inject_mqtt_to_specified_swagger(filename: str = Query(..., description="Nam
             "/run-mqtt-test/{VU_COUNT}/{duration}/{broker}/{port}/{topic}/{password}": {
                 "mqtt": {
                     "tags": ["mqtt-controller"],
-                    "summary": "Run MQTT Load Test via Path Params",
-                    "description": "Runs MQTT load test using parameters passed directly in the URL path.",
-                    "operationId": "runMqttTestWithParams",
+                    "summary": "Run MQTT Load Test via Path Params and Credentials List",
+                    "description": "Runs MQTT load test using parameters passed in the URL path and a list of credentials in the request body.",
+                    "operationId": "runMqttTestWithParamsAndCredentials",
                     "parameters": [
                         {"name": "VU_COUNT", "in": "path", "required": True, "schema": {"type": "integer"}, "description": "Number of Virtual Users for K6 test"},
                         {"name": "duration", "in": "path", "required": True, "schema": {"type": "string"}, "description": "Duration of the load test"},
                         {"name": "broker", "in": "path", "required": True, "schema": {"type": "string"}, "description": "MQTT broker address"},
                         {"name": "port", "in": "path", "required": True, "schema": {"type": "string"}, "description": "MQTT broker port"},
                         {"name": "topic", "in": "path", "required": True, "schema": {"type": "string"}, "description": "MQTT topic to publish to"},
-                        {"name": "password", "in": "path", "required": True, "schema": {"type": "string"}, "description": "MQTT password (can be empty)"}
+                        {"name": "password", "in": "path", "required": False, "schema": {"type": "string"}, "description": "MQTT password (can be empty)"}
                     ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "credentials": {
+                                            "type": "array",
+                                            "items": {"type": "string"},
+                                            "description": "List of MQTT credentials"
+                                        }
+                                    },
+                                    "required": ["credentials"]
+                                }
+                            }
+                        }
+                    },
                     "responses": {
                         "200": {"description": "Test started successfully"},
                         "400": {"description": "Invalid input"}
