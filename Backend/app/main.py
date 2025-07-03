@@ -12,19 +12,22 @@ from app.routers import swagger
 from app.routers import generate_test
 from app.routers import execution
 from app.routers import mqtt
+from app.routers import jenkins
 
+import asyncio
 
 app = FastAPI()  # ✅ Only define once
 app.include_router(user.router)
 app.include_router(swagger.router)
 app.include_router(generate_test.router)
 app.include_router(execution.router)
+app.include_router(jenkins.router)
 app.include_router(mqtt.router)
 
 
 
 @app.on_event("startup")
-def create_admin_user():
+async def create_admin_user():
     db = next(get_db())
     admin_username = os.getenv("ADMIN_USERNAME", "admin")
     admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
@@ -41,6 +44,10 @@ def create_admin_user():
         db.add(new_user)
         db.commit()
         print("✅ Admin user created with role=admin")
+     # Trigger cluster check once and cache the result
+    loop = asyncio.get_event_loop()
+    # Run blocking function in executor to avoid blocking event loop
+    await loop.run_in_executor(None, jenkins.perform_cluster_check_once)
 
 app.add_middleware(
     CORSMiddleware,

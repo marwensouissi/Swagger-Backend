@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaCloud, FaServer, FaArrowLeft, FaChartLine, FaFileExport } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import Cloud from './Cloud';
+import CloudClusterForm from './CloudClusterForm';
 
-const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
+const ChooseExecutionOption = ({  filename, onBack }) => {
   const [hoveredOption, setHoveredOption] = useState(null);
   const [running, setRunning] = useState(false);
   const [logs, setLogs] = useState('');
@@ -17,8 +19,8 @@ const ChooseExecutionOption = ({ onSelectOption, filename, onBack }) => {
   const [extractedValues, setExtractedValues] = useState([]);
 
   const [showPopup, setShowPopup] = useState(false);
-const [copied, setCopied] = useState(false);
-
+  const [copied, setCopied] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   // Auto-scroll logs
   useEffect(() => {
@@ -49,6 +51,7 @@ const [copied, setCopied] = useState(false);
       const result = await response.json();
       const values = result[keyInput] || [];
   
+    
       setExtractedValues(values);
       setShowPopup(true);
     } catch (error) {
@@ -186,7 +189,12 @@ const handleCopyAll = () => {
     }
   };
 
+  if (selectedOption === 'cloud') {
+    return <CloudClusterForm onBack={() => setSelectedOption(null)} />;
+  }
+
   return (
+    
     <motion.div 
       className="modal-overlay"
       initial={{ opacity: 0 }}
@@ -234,7 +242,7 @@ const handleCopyAll = () => {
               </motion.button>
 
               <motion.button 
-                onClick={() => onSelectOption("k6-operator")} 
+                onClick={() => setSelectedOption('cloud')}
                 className={`launch-btn cloud ${hoveredOption === 'cloud' ? 'btn-hovered' : ''}`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
