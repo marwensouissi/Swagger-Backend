@@ -21,7 +21,7 @@ export const options = {
 const broker = "mqtt://164.90.243.134";
 const port = "8883";
 const topic = "v1/devices/me/telemetry";
-const password = "564";
+const password = "";
 
 const clients = new Array(VU_COUNT);
 

@@ -6,7 +6,7 @@
 # Node artifact files
 node_modules/
 dist/
-Backend/generated
+Backend/app/generated
 
 # Compiled Java class files
 *.class

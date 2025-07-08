@@ -1,4 +1,4 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException, Query
 from fastapi.responses import JSONResponse
 import requests
 import asyncio
@@ -13,11 +13,10 @@ TRIGGER_TOKEN_CHECK = "check"
 TRIGGER_TOKEN_DESTROY = "cluster-destroyer"
 JENKINS_JOB_PATH_CHECK = "/job/DevOps/job/K6/job/cluster-checker"
 JENKINS_JOB_PATH_DESTROY = "/job/DevOps/job/K6/job/cluster-destroyer"
-
-JENKINS_URL = "http://localhost:8090"
 JENKINS_JOB_PATH = "/job/DevOps/job/K6/job/cluster-builder-k6"
 USERNAME = "Marouan"
 API_TOKEN = "11f95e13898dfdb25940bd7ca41eba689b"
+JENKINS_URL = "http://localhost:8090"
 
 logger = logging.getLogger("jenkins_ws")
 logging.basicConfig(level=logging.INFO)
@@ -121,15 +120,22 @@ async def run_k6_test_websocket(websocket: WebSocket):
                 await websocket.send_text(f"📦 Job Status: {status}")
             if status not in ("RUNNING", "PENDING"):
                 await websocket.send_text(f"✅ Final Status: {status}")
+                if status == "SUCCESS":
+                    # ✅ Update memory cache after success
+                    cluster_status_cache.update({
+                        "cluster_exists": True,
+                        "job_number": build_number,
+                        "note": "Cluster created successfully via WebSocket"
+                    })
                 break
             await asyncio.sleep(2)
+
     except WebSocketDisconnect:
         logger.info("WebSocket disconnected by client.")
+
     finally:
         await websocket.close()
         logger.info("WebSocket connection closed")
-        await asyncio.get_event_loop().run_in_executor(None, perform_cluster_check_once)
-
 
 
 def perform_cluster_check_once():
@@ -209,45 +215,75 @@ def get_cached_cluster_status():
     return JSONResponse(content=cluster_status_cache)
 
 
-@router.get("/destroy")
-def destroy_cluster():
-    trigger_url = f"{JENKINS_URL}{JENKINS_JOB_PATH_DESTROY}/build?token={TRIGGER_TOKEN_DESTROY}"
+@router.post("/destroy")
+async def destroy_cluster():
+    """
+    Triggers the Jenkins job to destroy the existing cluster.
+    """
     auth = (USERNAME, API_TOKEN)
+    trigger_url = f"{JENKINS_URL}{JENKINS_JOB_PATH_DESTROY}/build?token={TRIGGER_TOKEN_DESTROY}"
 
-    # Trigger the destroy job
-    resp = requests.post(trigger_url, auth=auth, allow_redirects=False)
-    if resp.status_code != 201:
-        raise HTTPException(status_code=resp.status_code, detail="❌ Failed to trigger destroy job")
+    try:
+        resp = requests.post(trigger_url, auth=auth, allow_redirects=False)
 
-    queue_url = resp.headers.get("Location")
-    if not queue_url:
-        raise HTTPException(status_code=500, detail="❌ No queue URL returned")
+        if resp.status_code != 201:
+            return JSONResponse(
+                status_code=500,
+                content={"status": "error", "message": f"Failed to trigger destroy job: {resp.status_code}"}
+            )
 
-    # Poll queue until build number is ready
-    build_number = None
-    for _ in range(120):
-        queue_data = requests.get(f"{queue_url}api/json", auth=auth).json()
-        if "executable" in queue_data:
-            build_number = queue_data["executable"]["number"]
-            break
-        time.sleep(1)
+        queue_url = resp.headers.get("Location")
+        if not queue_url:
+            return JSONResponse(
+                status_code=500,
+                content={"status": "error", "message": "Missing Jenkins queue URL"}
+            )
 
-    if not build_number:
-        raise HTTPException(status_code=500, detail="⏱️ Timed out waiting for build to start")
+        # Poll the queue to get the build number
+        build_number = None
+        for _ in range(30):
+            q_data = requests.get(f"{queue_url}api/json", auth=auth).json()
+            if "executable" in q_data:
+                build_number = q_data["executable"]["number"]
+                break
+            time.sleep(1)
 
-    # Wait for build to finish
-    build_status_url = f"{JENKINS_URL}{JENKINS_JOB_PATH_DESTROY}/{build_number}/api/json"
-    for _ in range(60):
-        build_data = requests.get(build_status_url, auth=auth).json()
-        if not build_data.get("building", True):
-            result = build_data.get("result")
-            break
-        time.sleep(2)
-    else:
-        raise HTTPException(status_code=500, detail="⏱️ Timed out waiting for build to finish")
+        if not build_number:
+            return JSONResponse(
+                status_code=500,
+                content={"status": "error", "message": "Timeout while waiting for Jenkins build number"}
+            )
 
-    # Get and return result
-    if result == "SUCCESS":
-        return JSONResponse(content={"destroy_status": "success", "job_number": build_number})
-    else:
-        return JSONResponse(content={"destroy_status": "failed", "job_number": build_number})
+        # Wait until the destroy job completes
+        for _ in range(60):
+            build_info_url = f"{JENKINS_URL}{JENKINS_JOB_PATH_DESTROY}/{build_number}/api/json"
+            build_data = requests.get(build_info_url, auth=auth).json()
+            if not build_data.get("building", True):
+                result = build_data.get("result", "UNKNOWN")
+                break
+            time.sleep(2)
+        else:
+            result = "TIMEOUT"
+
+        # Update cluster cache if destroy succeeded
+        if result == "SUCCESS":
+            cluster_status_cache.update({
+                "cluster_exists": False,
+                "job_number": build_number,
+                "note": "Cluster destroyed successfully"
+            })
+
+        return JSONResponse(content={
+            "status": "success" if result == "SUCCESS" else "error",
+            "job_number": build_number,
+            "result": result
+        })
+    
+    
+
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "message": f"Exception occurred: {str(e)}"}
+        )
+

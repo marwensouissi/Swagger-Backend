@@ -96,8 +96,6 @@ export default function () {
         sleep(BUFFER_TIME);
     }
 }
-
-// Graceful shutdown
 export function teardown() {
     console.log("🔌 Disconnecting MQTT clients...");
     for (let i = 0; i < clients.length; i++) {

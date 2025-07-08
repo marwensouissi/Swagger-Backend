@@ -26,9 +26,10 @@ class App extends React.Component {
       password: "",
       error: null,
       showK6Functions: false,
-      showSwaggerUpload: false, // <-- Add this
+      showSwaggerUpload: false, 
       role: null,
       showAddUserModal: false,
+      clusterStatus: null, // "on" or "off"
 
 
     }
@@ -74,7 +75,53 @@ class App extends React.Component {
     }
   }
 
- 
+  async fetchClusterStatus() {
+    try {
+      const response = await fetch("http://localhost:6060/jenkins/check");
+      const data = await response.json();
+      
+      if (data.cluster_exists === true) {
+        this.setState({ clusterStatus: "on" });
+      } else if (data.cluster_exists === false) {
+        this.setState({ clusterStatus: "off" });
+      } else {
+        this.setState({ clusterStatus: "unknown" });
+      }
+    } catch (error) {
+      console.error("Error fetching cluster status:", error);
+      this.setState({ clusterStatus: "unknown" });
+    }
+  }
+  
+  async componentDidMount() {
+    const exists = await checkIfSwaggerExists();
+    const savedToken = sessionStorage.getItem("authToken");
+    const savedRole = sessionStorage.getItem("role");
+  
+    if (savedToken && this.props.system?.authActions?.authorize) {
+      this.props.system.authActions.authorize({
+        apiKey: {
+          name: "Authorization",
+          schema: {
+            type: "apiKey",
+            in: "header",
+            name: "Authorization",
+          },
+          value: `Bearer ${savedToken}`,
+        },
+      });
+    }
+  
+    await this.fetchClusterStatus(); // ⬅️ Call the fetch here
+  
+    this.setState({
+      isSwaggerChecked: true,
+      isSwaggerReady: exists,
+      isLoggedIn: !!savedToken,
+      token: savedToken,
+      role: savedRole,
+    });
+  }
   
 
   handleInputChange = (e) => {
@@ -374,6 +421,28 @@ class App extends React.Component {
         >
           K6 Functions
         </button>
+        <button
+  style={{
+    position: "fixed",
+    top: "22px",
+    right: "360px",
+    zIndex: 1000,
+    padding: "10px 16px",
+    borderRadius: "6px",
+    backgroundColor: this.state.clusterStatus === "on" ? "#28a745" : "#dc3545",
+    color: "#fff",
+    border: "none",
+    cursor: "default",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  }}
+  disabled
+>
+  <span role="img" aria-label="cloud">☁️</span>
+  {this.state.clusterStatus === "on" ? "ON" : "OFF"}
+</button>
+
 
           <button
     onClick={() => this.setState({ showAddUserModal: true })}
